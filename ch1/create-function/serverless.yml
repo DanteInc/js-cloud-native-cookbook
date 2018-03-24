@@ -1,0 +1,11 @@
+service: cncb-create-function
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  environment:
+    V1: value1
+
+functions:
+  hello:
+    handler: handler.hello
