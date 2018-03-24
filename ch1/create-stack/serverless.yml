@@ -1,0 +1,4 @@
+service: cncb-create-stack
+
+provider:
+  name: aws
