@@ -1,0 +1,15 @@
+service: cncb-create-stream-processor
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+    
+functions:
+  listener:
+    handler: handler.listener
+    events:
+      - stream:
+          type: kinesis
+          arn: ${cf:event-stream-${opt:stage}.streamArn}
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
