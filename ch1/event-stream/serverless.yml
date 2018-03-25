@@ -1,0 +1,36 @@
+service: cncb-event-stream
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - kinesis:PutRecord
+      Resource:
+        Fn::GetAtt: [ Stream, Arn ]
+
+functions:
+  publish:
+    handler: handler.publish
+    environment:
+      STREAM_NAME:
+        Ref: Stream
+
+resources:
+  Resources:
+    Stream:
+      Type: AWS::Kinesis::Stream
+      Properties:
+        Name: ${opt:stage}-${self:service}-s1
+        RetentionPeriodHours: 24
+        ShardCount: 1
+        
+  Outputs:
+    streamName:
+      Value: 
+        Ref: Stream
+    streamArn:
+      Value: 
+        Fn::GetAtt: [ Stream, Arn ]
+        
