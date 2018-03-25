@@ -7,6 +7,7 @@
 4. npm test
 5. npm run dp:lcl -- -s your-name
 6. sls invoke -r us-east-1 -f publish -s your-name -d '{"type":"thing-created"}'
-7. npm run rm:lcl -- -s your-name
+7. sls logs -f publish -r us-east-1 -s your-name
+8. npm run rm:lcl -- -s your-name
 
 

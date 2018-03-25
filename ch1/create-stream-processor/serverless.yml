@@ -10,6 +10,6 @@ functions:
     events:
       - stream:
           type: kinesis
-          arn: ${cf:event-stream-${opt:stage}.streamArn}
+          arn: ${cf:cncb-event-stream-${opt:stage}.streamArn}
           batchSize: 100
           startingPosition: TRIM_HORIZON

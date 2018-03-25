@@ -7,4 +7,5 @@
 4. npm test
 5. npm run dp:lcl -- -s your-name
 6. sls invoke -r us-east-1 -f hello -s your-name -d '{"hello":"world"}'
-7. npm run rm:lcl -- -s your-name
+7. sls logs -f hello -r us-east-1 -s your-name
+8. npm run rm:lcl -- -s your-name
