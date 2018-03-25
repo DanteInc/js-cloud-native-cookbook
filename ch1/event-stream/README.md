@@ -1,8 +1,8 @@
 # Creating an event stream and publishing an event
 
 ## How to do it...
-1. sls create --template-url https://github.com/danteinc/js-cloud-native-cookbook/tree/master/ch1/create-stream --path cncb-create-stream
-2. cd cncb-create-stream
+1. sls create --template-url https://github.com/danteinc/js-cloud-native-cookbook/tree/master/ch1/event-stream --path cncb-event-stream
+2. cd cncb-event-stream
 3. npm install
 4. npm test
 5. npm run dp:lcl -- -s your-name
