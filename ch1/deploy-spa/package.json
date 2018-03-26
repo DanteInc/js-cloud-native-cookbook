@@ -1,0 +1,21 @@
+{
+  "name": "cncb-deploy-spa",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "sls package -r us-east-1 -s test",
+    "dp:lcl": "sls deploy -v -r us-east-1",
+    "rm:lcl": "sls remove -r us-east-1"
+  },
+  "dependencies": {
+    "react": "16.2.0",
+    "react-dom": "16.2.0"
+  },
+  "devDependencies": {
+    "react-scripts": "1.1.1",
+    "serverless": "1.26.0",
+    "serverless-spa-deploy": "^1.0.0"
+  }
+}
