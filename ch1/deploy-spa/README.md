@@ -1,4 +1,4 @@
-# Creating a stack
+# Deploying a single page application
 
 ## How to do it...
 1. sls create --template-url https://github.com/danteinc/js-cloud-native-cookbook/tree/master/ch1/deploy-spa --path cncb-deploy-spa
