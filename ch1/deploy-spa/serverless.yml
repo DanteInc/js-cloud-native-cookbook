@@ -32,6 +32,4 @@ resources:
         Ref: WebsiteBucket
     WebsiteURL:
       Value:
-        Fn::GetAtt:
-          - WebsiteBucket
-          - WebsiteURL
+        Fn::GetAtt: [ WebsiteBucket, WebsiteURL ]

@@ -6,6 +6,7 @@
 3. npm install
 4. npm start
 5. npm test
-6. npm run dp:lcl -- -s your-name
-7. browse http://cncb-deploy-spa-your-name-websitebucket-xxxx.s3-website-us-east-1.amazonaws.com
-8. npm run rm:lcl -- -s your-name
+6. npm run build
+7. npm run dp:lcl -- -s your-name
+8. browse http://cncb-deploy-spa-your-name-websitebucket-xxxx.s3-website-us-east-1.amazonaws.com
+9. npm run rm:lcl -- -s your-name
