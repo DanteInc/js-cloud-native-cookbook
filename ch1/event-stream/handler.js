@@ -30,7 +30,5 @@ module.exports.publish = (event, context, callback) => {
 
   const kinesis = new aws.Kinesis();
 
-  kinesis.putRecord(params).promise()
-    .then(resp => callback(null, resp))
-    .catch(err => callback(err));
+  kinesis.putRecord(params, callback);
 };
