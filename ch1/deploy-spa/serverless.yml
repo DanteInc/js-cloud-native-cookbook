@@ -23,8 +23,6 @@ resources:
         WebsiteConfiguration:
           IndexDocument: index.html
           ErrorDocument: index.html
-        VersioningConfiguration:
-          Status: Enabled
 
   Outputs:
     WebsiteBucketName:
