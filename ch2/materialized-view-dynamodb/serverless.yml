@@ -1,0 +1,44 @@
+service: cncb-materialized-view-dynamodb
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+        - dynamodb:GetItem
+      Resource:
+        Fn::GetAtt: [ Table, Arn ]
+  environment:
+    TABLE_NAME:
+      Ref: Table
+
+functions:
+  listener:
+    handler: handler.listener
+    events:
+      - stream:
+          type: kinesis
+          arn: ${cf:cncb-event-stream-${opt:stage}.streamArn}
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
+  query:
+    handler: handler.query
+
+resources:
+  Resources:
+    Table:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${opt:stage}-${self:service}-things
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
