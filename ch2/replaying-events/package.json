@@ -1,0 +1,23 @@
+{
+  "name": "cncb-replaying-events",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "replay": "node index.js",
+    "test": "sls package -r us-east-1",
+    "dp:lcl": "sls deploy -r us-east-1",
+    "rm:lcl": "sls remove -r us-east-1"
+  },
+  "devDependencies": {
+    "serverless": "1.26.0"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.45.0",
+    "bluebird": "^3.5.0",
+    "debug": "^2.6.4",
+    "highland": "^2.11.1",
+    "lodash": "^4.17.4",
+    "moment": "^2.18.1",
+    "yargs": "^7.1.0"
+  }
+}
