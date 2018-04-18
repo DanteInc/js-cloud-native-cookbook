@@ -10,6 +10,6 @@
    * cd ../cncb-event-stream
    * sls invoke -r us-east-1 -f publish -s your-name -d '{"type":"thing-created","thing":{"new":{"name":"thing three","id":"33333333-3333-3333-3333-333333333333"}}}'
 7. sls logs -f listener -r us-east-1 -s your-name
-8. curl https://s3.amazonaws.com/cncb-materialized-view-s3-<your-name>-bucket-<suffix>/things/33333333-3333-3333-3333-333333333333 | json_pp
+8. curl https://s3.amazonaws.com/cncb-materialized-view-s3-&lt;your-name&gt;-bucket-&lt;suffix&gt;/things/33333333-3333-3333-3333-333333333333 | json_pp
 9. manually empty bucket
 10. npm run rm:lcl -- -s your-name
