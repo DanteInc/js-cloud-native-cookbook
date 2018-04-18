@@ -1,0 +1,24 @@
+CognitoUnAuthorizedRole:
+  Type: AWS::IAM::Role
+  Properties:
+    AssumeRolePolicyDocument: 
+      Statement:
+        - Effect: Allow
+          Principal: 
+            Federated: cognito-identity.amazonaws.com
+          Action: 
+            - sts:AssumeRoleWithWebIdentity
+          Condition:
+            StringEquals: 
+              cognito-identity.amazonaws.com:aud:
+                Ref: IdentityPool
+            ForAnyValue:StringLike:
+              cognito-identity.amazonaws.com:amr: unauthenticated
+    Policies:
+      - PolicyName: CognitoUnauthorizedPolicy
+        PolicyDocument: 
+          Statement: 
+            - Effect: Allow
+              Action:
+                - cognito-sync:*
+              Resource: '*'

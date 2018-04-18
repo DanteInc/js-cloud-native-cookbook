@@ -1,0 +1,48 @@
+service: cncb-materialized-view-cognito
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - cognito-sync:ListRecords
+        - cognito-sync:UpdateRecords
+      Resource: '*'
+
+functions:
+  listener:
+    handler: handler.listener
+    events:
+      - stream:
+          type: kinesis
+          arn: ${cf:cncb-event-stream-${opt:stage}.streamArn}
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
+    environment:
+      IDENTITY_POOL_ID:
+        Ref: IdentityPool
+
+resources:
+  Resources:
+    IdentityPool:
+      Type: AWS::Cognito::IdentityPool
+      Properties:
+        AllowUnauthenticatedIdentities: true
+    IdentityPoolRoleMapping:
+      Type: AWS::Cognito::IdentityPoolRoleAttachment
+      Properties:
+        IdentityPoolId:
+          Ref: IdentityPool
+        Roles:
+          unauthenticated: 
+            Fn::GetAtt: [ CognitoUnAuthorizedRole, Arn ]
+    CognitoUnAuthorizedRole: ${file(includes.yml):CognitoUnAuthorizedRole}
+
+  Outputs:
+    identityPoolId:
+      Value: 
+        Ref: IdentityPool
+    identityPoolName:
+      Value: 
+        Fn::GetAtt: [ IdentityPool, Name ]
