@@ -16,7 +16,7 @@ module.exports.listener = (event, context, cb) => {
 
 const recordToEvent = r => JSON.parse(new Buffer(r.kinesis.data, 'base64'));
 
-const byType = event => event.type.matches(/thing-.+/);
+const byType = event => event.type.match(/thing-.+/);
 
 const put = event => {
   const params = {
@@ -39,7 +39,7 @@ module.exports.trigger = (event, context, cb) => {
 
   _(event.Records)
     .flatMap(getMicroEventStore)
-    .tap(uow => console.log('events: %j', uow))
+    .tap(events => console.log('events: %j', events))
     .collect().toCallback(cb);
 };
 
