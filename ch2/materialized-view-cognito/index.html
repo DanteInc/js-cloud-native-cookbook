@@ -24,7 +24,7 @@ class App extends React.Component {
             syncClient.openOrCreateDataset('things', (err, dataset) => {
                 if (!err) {
                     this.dataset = dataset;
-                    this.update();
+                    this.get();
                 } else {
                     console.error(err);
                 }
@@ -35,7 +35,7 @@ class App extends React.Component {
     synchronize(e) {
 	    this.dataset.synchronize({
 	        onSuccess: () => {
-                this.update();
+                this.get();
             },
             onFailure: (err) => {
                 console.error(err);
@@ -43,7 +43,7 @@ class App extends React.Component {
 	    });
     }
 
-    update(err, value) {
+    get(err, value) {
         this.dataset.get('thing', (err, value) => {
             if (!err) {
                 // console.log('thing: ', value);
