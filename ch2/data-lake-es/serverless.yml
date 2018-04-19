@@ -1,0 +1,95 @@
+service: cncb-data-lake-es
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+
+plugins:
+  - serverless-pseudo-parameters
+
+functions:
+  transformer:
+    handler: handler.transform
+    timeout: 120
+
+resources:
+  Resources:
+    Domain:
+      Type: AWS::Elasticsearch::Domain
+      Properties:
+        ElasticsearchVersion: 6.2
+        ElasticsearchClusterConfig: 
+          DedicatedMasterEnabled: false
+          InstanceCount: 1
+          ZoneAwarenessEnabled: false
+          InstanceType: t2.small.elasticsearch
+        EBSOptions: 
+          EBSEnabled: true
+          Iops: 0
+          VolumeSize: 10
+          VolumeType: gp2
+        SnapshotOptions: 
+          AutomatedSnapshotStartHour: 0
+        AccessPolicies: 
+          Statement: 
+            - Effect: Allow
+              Principal: 
+                AWS: '*'
+              Action: 'es:*'
+              Resource: 'arn:aws:es:${opt:region}:#{AWS::AccountId}:domain/cncb-da-domain-*/*'
+        AdvancedOptions: 
+          rest.action.multi.allow_explicit_index: true
+
+    DeliveryStream:
+      Type: AWS::KinesisFirehose::DeliveryStream
+      Properties: 
+        DeliveryStreamType: KinesisStreamAsSource      
+        KinesisStreamSourceConfiguration: 
+          KinesisStreamARN: ${cf:cncb-event-stream-${opt:stage}.streamArn}
+          RoleARN:
+            Fn::GetAtt: [ KinesisRole, Arn ]
+        ElasticsearchDestinationConfiguration: 
+          DomainARN: 
+            Fn::GetAtt: [ Domain, DomainArn ]
+          IndexName: events
+          IndexRotationPeriod: OneDay
+          TypeName: event
+          BufferingHints: 
+            IntervalInSeconds: 60
+            SizeInMBs: 50
+          RetryOptions: 
+            DurationInSeconds: 60
+          RoleARN: 
+            Fn::GetAtt: [ DeliveryRole, Arn ]
+          CloudWatchLoggingOptions: ${file(includes.yml):CloudWatchLoggingOptions}
+          S3BackupMode: FailedDocumentsOnly
+          S3Configuration: ${file(includes.yml):S3Configuration}
+          ProcessingConfiguration: ${file(includes.yml):ProcessingConfiguration}
+
+    Bucket:
+      Type: AWS::S3::Bucket
+
+    LogGroup: ${file(includes.yml):LogGroup}
+    LogStream: ${file(includes.yml):LogStream}
+    KinesisRole: ${file(includes.yml):KinesisRole}
+    DeliveryRole: ${file(includes.yml):DeliveryRole}
+
+  Outputs:
+    DomainArn:
+      Value:
+        Fn::GetAtt: [ Domain, DomainArn ]
+    DomainEndpoint:
+      Value:
+        Fn::GetAtt: [ Domain, DomainEndpoint ]
+    KibanaEndpoint:
+      Value:
+        Fn::Join:
+          - ''
+          - - Fn::GetAtt: [ Domain, DomainEndpoint ]
+            - '/_plugin/kibana'
+    DeliveryStream:
+      Value:
+        Ref: DeliveryStream
+    DeliveryStreamArn:
+      Value:
+        Fn::GetAtt: [ DeliveryStream, Arn ]
