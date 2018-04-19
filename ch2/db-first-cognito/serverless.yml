@@ -1,0 +1,60 @@
+service: cncb-db-first-cognito
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - kinesis:PutRecord
+      Resource: ${cf:cncb-event-stream-${opt:stage}.streamArn}
+
+functions:
+  trigger:
+    handler: handler.trigger
+    events:
+      - stream:
+          type: kinesis
+          arn:
+            Fn::GetAtt: [ CognitoStream, Arn ]
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
+    environment:
+      STREAM_NAME: ${cf:cncb-event-stream-${opt:stage}.streamName}
+
+resources:
+  Resources:
+    CognitoStream:
+      Type: AWS::Kinesis::Stream
+      Properties:
+          ShardCount: 1
+
+    IdentityPool:
+      Type: AWS::Cognito::IdentityPool
+      Properties:
+        AllowUnauthenticatedIdentities: true
+        CognitoStreams:
+          StreamName:
+            Ref: CognitoStream
+          StreamingStatus: ENABLED
+          RoleArn:
+            Fn::GetAtt: [ CognitoPublishRole, Arn ]
+    IdentityPoolRoleMapping:
+      Type: AWS::Cognito::IdentityPoolRoleAttachment
+      Properties:
+        IdentityPoolId:
+          Ref: IdentityPool
+        Roles:
+          unauthenticated: 
+            Fn::GetAtt: [ CognitoUnAuthorizedRole, Arn ]
+
+    CognitoUnAuthorizedRole: ${file(includes.yml):CognitoUnAuthorizedRole}
+    CognitoPublishRole: ${file(includes.yml):CognitoPublishRole}
+
+  Outputs:
+    identityPoolId:
+      Value: 
+        Ref: IdentityPool
+    identityPoolName:
+      Value: 
+        Fn::GetAtt: [ IdentityPool, Name ]

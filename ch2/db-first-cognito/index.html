@@ -1,0 +1,102 @@
+<div id="root"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.4.2/react-dom.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+<script src="https://sdk.amazonaws.com/js/aws-sdk-2.1.12.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/amazon-cognito-js@1.1.0/dist/amazon-cognito.min.js"></script>
+
+<script type="text/babel">
+function guid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' + s4() + '-' + s4() + s4() + s4();
+}
+
+class App extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = { id: guid(), name: '', description: ''};
+        this.handleChange = this.handleChange.bind(this);
+    }
+
+    componentWillMount() {
+        AWS.config.region = 'us-east-1';
+        AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+            IdentityPoolId: 'us-east-1:1480fe77-37eb-4cd0-80a5-2cbfa1a35f92',
+        });
+        
+        AWS.config.credentials.get(() => {
+            const syncClient = new AWS.CognitoSyncManager();
+            syncClient.openOrCreateDataset('things', (err, dataset) => {
+                if (!err) {
+                    this.dataset = dataset;
+                    this.get();
+                } else {
+                    console.error(err);
+                }
+            });
+        });
+    }
+
+    handleChange(event) {
+        this.setState({ [event.target.name]: event.target.value });
+    }
+
+    get(err, value) {
+        this.dataset.get('thing', (err, value) => {
+            if (!err) {
+                // console.log('thing: ', value);
+                this.setState(value ? JSON.parse(value) : {});
+            } else {
+                console.error(err);
+            }
+        });
+    }
+    
+    save(e) {
+        this.dataset.put('thing', JSON.stringify(this.state), (err) => {
+            if (err) console.error(err);
+        });
+    }
+
+    synchronize(e) {
+	    this.dataset.synchronize({
+	        onSuccess: (data, newRecords) => {
+                console.log('data: ', data);
+                console.log('newRecords: ', newRecords);
+            },
+            onFailure: (err) => {
+                console.error(err);
+            }
+	    });
+    }
+    
+    render() {
+        return (
+            <div>
+                <h1>Identity Id: {AWS.config.credentials.params.IdentityId}</h1>
+                <form>
+                    <label>Name:
+                        <input type="text" name="name" value={this.state.name} onChange={this.handleChange} />
+                    </label>
+                    <label>Description:
+                        <input type="text" name="description" value={this.state.description} onChange={this.handleChange} />
+                    </label>
+                </form>
+                <button onClick={this.save.bind(this)}>Save</button>
+                <pre>Thing: {JSON.stringify(this.state, null, 2)}</pre>
+                <button onClick={this.synchronize.bind(this)}>Synchronize</button>
+            </div>
+        );
+    }
+}
+
+ReactDOM.render(
+    <App />,
+    document.getElementById('root')
+);
+</script>
