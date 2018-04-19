@@ -1,0 +1,70 @@
+service: cncb-materialized-view-es
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - es:ESHttpPost
+        - es:ESHttpGet
+      Resource:
+        - Fn::GetAtt: [ Domain, DomainArn ]
+        - Fn::Join:
+          - ''
+          - - Fn::GetAtt: [ Domain, DomainArn ]
+            - '/*'
+  environment:
+    DOMAIN_ENDPOINT:
+      Ref: Fn::GetAtt: [ Domain, DomainEndpoint ]
+
+plugins:
+  - serverless-pseudo-parameters
+
+functions:
+  listener:
+    handler: handler.listener
+    events:
+      - stream:
+          type: kinesis
+          arn: ${cf:cncb-event-stream-${opt:stage}.streamArn}
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
+  search:
+    handler: handler.search
+
+resources:
+  Resources:
+    Domain:
+      Type: AWS::Elasticsearch::Domain
+      Properties:
+        ElasticsearchVersion: 6.2
+        ElasticsearchClusterConfig: 
+          DedicatedMasterEnabled: false
+          InstanceCount: 1
+          ZoneAwarenessEnabled: false
+          InstanceType: t2.small.elasticsearch
+        EBSOptions: 
+          EBSEnabled: true
+          Iops: 0
+          VolumeSize: 10
+          VolumeType: gp2
+        SnapshotOptions: 
+          AutomatedSnapshotStartHour: 0
+        AccessPolicies: 
+          Statement: 
+            - Effect: Allow
+              Principal: 
+                AWS: '*'
+              Action: 'es:*'
+              Resource: 'arn:aws:es:${opt:region}:#{AWS::AccountId}:domain/cncb-ma-domain-*/*'
+        AdvancedOptions: 
+          rest.action.multi.allow_explicit_index: true
+
+  Outputs:
+    DomainName:
+      Value:
+        Ref: Domain
+    DomainEndpoint:
+      Value:
+        Fn::GetAtt: [ Domain, DomainEndpoint ]
