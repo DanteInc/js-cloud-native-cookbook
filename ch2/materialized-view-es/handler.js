@@ -24,7 +24,8 @@ module.exports.listener = (event, context, cb) => {
 
 const recordToEvent = r => JSON.parse(new Buffer(r.kinesis.data, 'base64'));
 
-const forThingCreated = e => e.type === 'thing-created';
+// additional conditions account for other recipes exercised first
+const forThingCreated = e => e.type === 'thing-created' && e.thing && e.thing.new;
 
 const toThing = event => ({
   id: event.thing.new.id,

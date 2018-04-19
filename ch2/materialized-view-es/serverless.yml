@@ -16,7 +16,7 @@ provider:
             - '/*'
   environment:
     DOMAIN_ENDPOINT:
-      Ref: Fn::GetAtt: [ Domain, DomainEndpoint ]
+      Fn::GetAtt: [ Domain, DomainEndpoint ]
 
 plugins:
   - serverless-pseudo-parameters
