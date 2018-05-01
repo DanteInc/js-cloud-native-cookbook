@@ -1,0 +1,68 @@
+service: cncb-bff-graphql-crud
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+        - dynamodb:GetItem
+        - dynamodb:Scan
+        - dynamodb:DeleteItem
+      Resource:
+        Fn::GetAtt: [ Table, Arn ]
+    - Effect: Allow
+      Action:
+        - kinesis:PutRecord
+      Resource: ${cf:cncb-event-stream-${opt:stage}.streamArn}
+
+functions:
+  graphql:
+    handler: handler.graphql
+    events:
+      - http:
+          path: graphql
+          method: post
+          cors: true
+    environment:
+      TABLE_NAME:
+        Ref: Table
+  graphiql:
+    handler: handler.graphiql
+    events:
+      - http:
+          path: graphiql
+          method: get
+          cors: true
+    environment:
+      SERVERLESS_STAGE: ${opt:stage}
+  trigger:
+    handler: handler.trigger
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt: [ Table, StreamArn ]
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
+    environment:
+      STREAM_NAME: ${cf:cncb-event-stream-${opt:stage}.streamName}
+
+resources:
+  Resources:
+    Table:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${opt:stage}-${self:service}-things
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
