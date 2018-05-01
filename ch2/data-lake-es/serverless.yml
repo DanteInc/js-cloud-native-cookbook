@@ -6,6 +6,7 @@ provider:
 
 plugins:
   - serverless-pseudo-parameters
+  - elasticsearch # create template (local plugin)
 
 functions:
   transformer:
