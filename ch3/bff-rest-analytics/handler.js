@@ -60,8 +60,8 @@ const getMicroEventStore = (record) => {
     },
     ExpressionAttributeValues: {
       ':partitionKey': record.dynamodb.Keys.partitionKey.S,
-      ":from": timestamp.startOf('month'),
-      ":to": timestamp.endOf('month')
+      ":from": timestamp.startOf('month').valueOf(),
+      ":to": timestamp.endOf('month').valueOf()
     }
   };
 
