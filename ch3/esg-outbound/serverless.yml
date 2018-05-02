@@ -1,0 +1,18 @@
+service: cncb-esg-outbound
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  environment:
+    REPO: enter-your-github-project
+    OWNER: enter-your-github-id
+
+functions:
+  listener:
+    handler: handler.listener
+    events:
+      - stream:
+          type: kinesis
+          arn: ${cf:cncb-event-stream-${opt:stage}.streamArn}
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
