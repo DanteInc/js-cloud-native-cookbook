@@ -1,0 +1,20 @@
+service: cncb-esg-inbound
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - kinesis:PutRecord
+      Resource: ${cf:cncb-event-stream-${opt:stage}.streamArn}
+
+functions:
+  webhook:
+    handler: handler.webhook
+    events:
+      - http:
+          path: webhook
+          method: post
+    environment:
+      STREAM_NAME: ${cf:cncb-event-stream-${opt:stage}.streamName}
