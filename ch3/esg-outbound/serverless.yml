@@ -6,6 +6,7 @@ provider:
   environment:
     REPO: enter-your-github-project
     OWNER: enter-your-github-id
+    TOKEN: enter-your-github-token
 
 functions:
   listener:

@@ -8,6 +8,6 @@
 5. npm run dp:lcl -- -s your-name
 6. publish an event from a separate terminal
    * cd ../cncb-event-stream
-   * sls invoke -r us-east-1 -f publish -s your-name -d '{"type":"issue-created","partitionKey":"11111111-1111-1111-1111-111111111111","issue":{"new":{"title":"issue one","description":"this is issue one.","id":"11111111-1111-1111-1111-111111111111"}}}'
+   * sls invoke -r us-east-1 -f publish -s your-name -d '{"type":"issue-created","issue":{"new":{"title":"issue one","description":"this is issue one.","id":"33333333-55555-1111-1111-111111111111"}}}'
 7. sls logs -f listener -r us-east-1 -s your-name
 9. npm run rm:lcl -- -s your-name

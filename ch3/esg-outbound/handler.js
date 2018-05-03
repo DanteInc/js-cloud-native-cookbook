@@ -1,12 +1,13 @@
 const aws = require('aws-sdk');
 const _ = require('highland');
-const uuid = require('uuid');
+require('isomorphic-fetch');
 
 module.exports.listener = (event, context, cb) => {
   // console.log('event: %j', event);
 
   _(event.Records)
     .map(recordToEvent)
+    .tap(print)
     .filter(byType)
     .flatMap(post)
     .tap(print)
@@ -16,7 +17,7 @@ module.exports.listener = (event, context, cb) => {
 
 const recordToEvent = r => JSON.parse(Buffer.from(r.kinesis.data, 'base64'));
 
-const byType = event => 'issue-created';
+const byType = event => event.type === 'issue-created';
 
 const post = event => {
   const body = {
@@ -30,10 +31,18 @@ const post = event => {
     fetch(`https://api.github.com/repos/${process.env.OWNER}/${process.env.REPO}/issues`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.TOKEN}`,
       },
       body: JSON.stringify(body)
     })
+      .then((response) => {
+        console.log('response: %j', response);
+        return response.json();
+      })
+      .then((response) => {
+        console.log('response body: %j', response);
+      })
   );
 };
 
