@@ -1,0 +1,22 @@
+service: cncb-event-orchestration
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - kinesis:PutRecord
+      Resource: ${cf:cncb-event-stream-${opt:stage}.streamArn}
+
+functions:
+  listener:
+    handler: handler.listener
+    events:
+      - stream:
+          type: kinesis
+          arn: ${cf:cncb-event-stream-${opt:stage}.streamArn}
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
+    environment:
+      STREAM_NAME: ${cf:cncb-event-stream-${opt:stage}.streamName}
