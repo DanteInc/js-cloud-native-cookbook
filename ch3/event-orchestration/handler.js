@@ -47,7 +47,7 @@ module.exports.listener = (event, context, cb) => {
     // .tap(print)
     .filter(onTransitions)
     .flatMap(toEvents)
-    // .tap(print)
+    .tap(print)
     .flatMap(publish)
     // .tap(print)
     .collect()
@@ -75,13 +75,11 @@ const toEvents = uow => {
 const publish = event => {
   const params = {
     StreamName: process.env.STREAM_NAME,
-    Record: {
-      PartitionKey: event.partitionKey,
-      Data: new Buffer(JSON.stringify(event)),
-    }
+    PartitionKey: event.partitionKey,
+    Data: new Buffer(JSON.stringify(event)),
   };
 
-  print(params);
+  // print(params);
 
   const kinesis = new aws.Kinesis();
   return _(kinesis.putRecord(params).promise());

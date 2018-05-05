@@ -8,7 +8,7 @@
 5. npm run dp:lcl -- -s your-name
 6. publish an event from a separate terminal
    * cd ../cncb-event-stream
-   * sls invoke -r us-east-1 -f publish -s your-name -d ../cncb-event-orchestration/data/order.json
-   * sls invoke -r us-east-1 -f publish -s your-name -d ../cncb-event-orchestration/data/reservation.json
+   * sls invoke -r us-east-1 -f publish -s your-name -p ../cncb-event-orchestration/data/order.json
+   * sls invoke -r us-east-1 -f publish -s your-name -p ../cncb-event-orchestration/data/reservation.json
 7. sls logs -f listener -r us-east-1 -s your-name
 8. npm run rm:lcl -- -s your-name
