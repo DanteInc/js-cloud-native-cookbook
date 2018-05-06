@@ -8,6 +8,7 @@ provider:
       Action:
         - dynamodb:PutItem
         - dynamodb:GetItem
+        - dynamodb:UpdateItem
       Resource:
         Fn::GetAtt: [ Table, Arn ]
     - Effect: Allow
@@ -21,9 +22,6 @@ provider:
 functions:
   submit:
     handler: handler.submit
-    environment:
-      TABLE_NAME:
-        Ref: Table
   trigger:
     handler: handler.trigger
     events:

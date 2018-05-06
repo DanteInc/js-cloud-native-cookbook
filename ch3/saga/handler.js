@@ -107,3 +107,5 @@ module.exports.query = (id, context, callback) => {
   const db = new aws.DynamoDB.DocumentClient();
   db.get(params, callback);
 };
+
+const print = v => console.log('%j', v);
