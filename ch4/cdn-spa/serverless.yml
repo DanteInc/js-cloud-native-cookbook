@@ -1,0 +1,20 @@
+service: cncb-cdn-spa
+
+provider:
+  name: aws
+
+plugins:
+  - serverless-spa-deploy
+  - serverless-spa-config
+
+custom:
+  spa:
+    files:
+      - source: ./build
+        globs: '**/*'
+        headers:
+          CacheControl: max-age=31536000 # 1 year
+      - source: ./build
+        globs: 'index.html'
+        headers:
+          CacheControl: max-age=300 # 5 minutes
