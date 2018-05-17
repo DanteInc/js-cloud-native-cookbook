@@ -1,0 +1,21 @@
+service: cncb-cdn-site
+
+provider:
+  name: aws
+
+plugins:
+  - serverless-spa-deploy
+  - serverless-spa-config
+
+custom:
+  spa:
+    files:
+      - source: ./dist
+        globs: '**/*'
+        headers:
+          CacheControl: max-age=31536000 # 1 year
+    redirect: true
+  dns:
+    hostedZoneId:  Z1234567890123
+    domainName: example.com
+    endpoint: www.${self:custom.dns.domainName}

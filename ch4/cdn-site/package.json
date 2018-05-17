@@ -1,0 +1,29 @@
+{
+  "name": "cncb-cdn-site",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "phenomic start",
+    "build": "phenomic build",
+    "test": "sls package -r us-east-1 -s test",
+    "dp:lcl": "sls deploy -v -r us-east-1",
+    "rm:lcl": "sls remove -r us-east-1"
+  },
+  "devDependencies": {
+    "@phenomic/cli": "^1.0.0-beta.2",
+    "@phenomic/core": "^1.0.0-beta.2",
+    "@phenomic/preset-react-app": "^1.0.0-beta.2",
+    "react": "^16.3.0",
+    "react-dom": "^16.3.0",
+    "react-helmet": "^5.0.0",
+    "react-router": "^3.2.0",
+    "serverless": "1.26.0",
+    "serverless-spa-config": "^1.0.0",
+    "serverless-spa-deploy": "^1.0.0"
+  },
+  "phenomic": {
+    "presets": [
+      "@phenomic/preset-react-app"
+    ]
+  }
+}
