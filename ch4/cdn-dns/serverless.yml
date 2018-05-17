@@ -18,7 +18,7 @@ custom:
         globs: 'index.html'
         headers:
           CacheControl: max-age=300 # 5 minutes    
-  cdn:
+  dns:
     hostedZoneId:  Z1234567890123
     domainName: example.com
-    endpoint: app.${self:custom.cdn.domainName}
+    endpoint: app.${self:custom.dns.domainName}
