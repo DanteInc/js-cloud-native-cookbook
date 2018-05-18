@@ -1,0 +1,13 @@
+{
+  "name": "cncb-cdn-service",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "sls package -r us-east-1 -s test",
+    "dp:lcl": "sls deploy -v -r us-east-1",
+    "rm:lcl": "sls remove -r us-east-1"
+  },
+  "devDependencies": {
+    "serverless": "1.26.0"
+  }
+}
