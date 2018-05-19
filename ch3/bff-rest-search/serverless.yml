@@ -72,25 +72,11 @@ resources:
       Type: AWS::SNS::Topic
       Properties: 
         TopicName: ${self:service}-${opt:stage}-trigger
-    BucketTopicPolicy: 
-      Type: AWS::SNS::TopicPolicy
-      Properties:
-        Topics:
-          - Ref: BucketTopic
-        PolicyDocument:
-          Statement:
-            - Effect: Allow
-              Principal:
-                Service: s3.amazonaws.com
-              Action: sns:Publish
-              Resource:
-                Ref: BucketTopic
-              Condition:
-                ArnLike:
-                  aws:SourceArn: arn:aws:s3:::${self:service}-${opt:stage}-bucket-*
+    BucketTopicPolicy: ${file(includes.yml):BucketTopicPolicy}
 
     Domain:
       Type: AWS::Elasticsearch::Domain
+      DependsOn: [ Bucket ]
       Properties:
         ElasticsearchVersion: 6.2
         ElasticsearchClusterConfig: 
