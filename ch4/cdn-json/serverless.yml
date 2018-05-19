@@ -1,0 +1,116 @@
+service: cncb-cdn-json
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  endpointType: REGIONAL
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+        - s3:PutObjectAcl
+        - s3:ListBucket
+      Resource:
+        - Fn::GetAtt: [ Bucket, Arn ]
+        - Fn::Join:
+          - ''
+          - - Fn::GetAtt: [ Bucket, Arn ]
+            - '*'
+  environment:
+    BUCKET_NAME:
+      Ref: Bucket
+
+functions:
+  search:
+    handler: handler.search
+    events:
+      - http:
+          path: search
+          method: get
+          cors: true
+    environment:
+      ENDPOINT:
+        Fn::Join:
+          - ''
+          - - https://
+            - Fn::GetAtt: [ ApiDistribution, DomainName ]
+  load:
+    handler: handler.load
+
+resources:
+  Resources:
+    ApiDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          Comment: ${opt:stage}-${self:service} (${opt:region})
+          Origins:
+            - Id: S3Origin
+              DomainName:
+                Fn::Join:
+                  - "."
+                  - - Ref: Bucket
+                    - s3.amazonaws.com
+              CustomOriginConfig:
+                OriginProtocolPolicy: https-only
+                OriginSSLProtocols: [ TLSv1.2 ]
+            - Id: ApiGateway
+              DomainName:
+                Fn::Join:
+                  - "."
+                  - - Ref: ApiGatewayRestApi
+                    - execute-api.${opt:region}.amazonaws.com
+              OriginPath: /${opt:stage}
+              CustomOriginConfig:
+                OriginProtocolPolicy: https-only
+                OriginSSLProtocols: [ TLSv1.2 ]
+          Enabled: true
+          HttpVersion: http2
+          PriceClass: PriceClass_100
+          DefaultCacheBehavior:
+            TargetOriginId: S3Origin
+            AllowedMethods:
+              - GET
+              - HEAD
+            CachedMethods:
+              - HEAD
+              - GET
+            Compress: true
+            ForwardedValues:
+              QueryString: false
+              Cookies:
+                Forward: none
+            MinTTL: 0
+            DefaultTTL: 0
+            ViewerProtocolPolicy: https-only
+          CacheBehaviors:
+            - TargetOriginId: ApiGateway
+              PathPattern: /search
+              AllowedMethods: [ GET, HEAD, OPTIONS ]
+              CachedMethods: [ GET, HEAD, OPTIONS ]
+              Compress: true
+              ForwardedValues:
+                QueryString: true
+                Headers: [ Accept, Authorization ]
+                Cookies:
+                  Forward: all
+              MinTTL: 0
+              DefaultTTL: 0
+              ViewerProtocolPolicy: https-only
+
+    Bucket:
+      Type: AWS::S3::Bucket
+
+  Outputs:
+    ApiDistributionId:
+      Value:
+        Ref: ApiDistribution  
+    ApiDistributionEndpoint:
+      Value:
+        Fn::Join:
+          - ''
+          - - https://
+            - Fn::GetAtt: [ ApiDistribution, DomainName ]
+    BucketName:
+      Value:
+        Ref: Bucket
