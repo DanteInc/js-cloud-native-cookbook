@@ -9,7 +9,7 @@ const transitions = [
       id: uuid.v1(),
       type: 'make-reservation',
       timestamp: Date.now(),
-      partitionKey: uow.event.order.id,
+      partitionKey: uow.event.partitionKey,
       reservation: {
         sku: uow.event.order.sku,
         quantity: uow.event.order.quantity,
@@ -26,7 +26,7 @@ const transitions = [
       id: uuid.v1(),
       type: 'update-order-status',
       timestamp: Date.now(),
-      partitionKey: uow.event.context.order.id,
+      partitionKey: uow.event.partitionKey,
       order: {
         status: 'reserved',
       },
