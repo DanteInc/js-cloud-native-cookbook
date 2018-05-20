@@ -1,0 +1,16 @@
+BucketTopicPolicy: 
+  Type: AWS::SNS::TopicPolicy
+  Properties:
+    Topics:
+      - Ref: BucketTopic
+    PolicyDocument:
+      Statement:
+        - Effect: Allow
+          Principal:
+            Service: s3.amazonaws.com
+          Action: sns:Publish
+          Resource:
+            Ref: BucketTopic
+          Condition:
+            ArnLike:
+              aws:SourceArn: arn:aws:s3:::${self:service}-${opt:stage}-bucket-*
