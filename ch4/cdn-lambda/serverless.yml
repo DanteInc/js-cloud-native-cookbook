@@ -1,0 +1,86 @@
+service: cncb-cdn-lambda
+
+plugins:
+  - serverless-plugin-cloudfront-lambda-edge
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+        - s3:PutObjectAcl
+      Resource:
+        - Fn::Join:
+          - ''
+          - - Fn::GetAtt: [ Bucket, Arn ]
+            - '*'
+
+functions:
+  authorize:
+    handler: handler.authorize
+    memorySize: 128
+    timeout: 1
+    lambdaAtEdge:
+      distribution: 'ApiDistribution'
+      eventType: 'viewer-request'
+  load:
+    handler: handler.load
+    environment:
+      BUCKET_NAME:
+        Ref: Bucket
+
+resources:
+  Resources:
+    Bucket:
+      Type: AWS::S3::Bucket
+
+    ApiDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          Comment: ${opt:stage}-${self:service} (${opt:region})
+          Origins:
+            - Id: S3Origin
+              DomainName:
+                Fn::Join:
+                  - "."
+                  - - Ref: Bucket
+                    - s3.amazonaws.com
+              CustomOriginConfig:
+                OriginProtocolPolicy: https-only
+                OriginSSLProtocols: [ TLSv1.2 ]
+          Enabled: true
+          HttpVersion: http2
+          PriceClass: PriceClass_100
+          DefaultCacheBehavior:
+            TargetOriginId: S3Origin
+            AllowedMethods:
+              - GET
+              - HEAD
+            CachedMethods:
+              - HEAD
+              - GET
+            Compress: true
+            ForwardedValues:
+              QueryString: false
+              Cookies:
+                Forward: none
+            MinTTL: 0
+            DefaultTTL: 0
+            ViewerProtocolPolicy: https-only
+
+  Outputs:
+    ApiDistributionId:
+      Value:
+        Ref: ApiDistribution  
+    ApiDistributionEndpoint:
+      Value:
+        Fn::Join:
+          - ''
+          - - https://
+            - Fn::GetAtt: [ ApiDistribution, DomainName ]
+    BucketName:
+      Value:
+        Ref: Bucket
