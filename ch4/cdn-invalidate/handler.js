@@ -19,7 +19,7 @@ module.exports.load = (thing, context, callback) => {
 module.exports.trigger = (event, context, cb) => {
   console.log('event: %j', event);
 
-  _(process.env.DISABLED ? [] : event.Records)
+  _(process.env.DISABLED === 'true' ? [] : event.Records)
     .flatMap(messagesToTriggers)
     .tap(print)
     .flatMap(invalidate)
@@ -37,7 +37,7 @@ const invalidate = (trigger) => {
       CallerReference: uuid.v1(),
       Paths: {
         Quantity: 1,
-        Items: [trigger.s3.object.key]
+        Items: [`/${trigger.s3.object.key}`]
       }
     }
   };

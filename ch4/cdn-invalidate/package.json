@@ -9,5 +9,9 @@
   },
   "devDependencies": {
     "serverless": "1.26.0"
+  },
+  "dependencies": {
+    "highland": "^2.13.0",
+    "uuid": "^3.2.1"
   }
 }

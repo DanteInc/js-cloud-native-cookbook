@@ -13,6 +13,10 @@ provider:
           - ''
           - - Fn::GetAtt: [ Bucket, Arn ]
             - '*'
+    - Effect: Allow
+      Action:
+        - cloudfront:CreateInvalidation
+      Resource: '*'
 
 functions:
   load:
