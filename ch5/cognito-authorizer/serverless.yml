@@ -1,0 +1,17 @@
+service: cncb-cognito-authorizer
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  endpointType: REGIONAL
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - http:
+          path: hello
+          method: get
+          cors: true
+          authorizer:
+            arn: ${cf:cncb-cognito-pool-${opt:stage}.userPoolArn}
