@@ -1,0 +1,25 @@
+service: cncb-custom-authorizer
+
+provider:
+  name: aws
+  # cfnRole: arn:aws:iam::<account-number>:role/cfnRole
+  runtime: nodejs8.10
+  endpointType: REGIONAL
+
+functions:
+  authorizer:
+    handler: handler.authorize
+    environment:
+      AUD: ${cf:cncb-cognito-pool-${opt:stage}.aud}
+      ISS: ${cf:cncb-cognito-pool-${opt:stage}.iss}
+      JWKS: ${self:functions.authorizer.environment.ISS}/.well-known/jwks.json
+      DEBUG: '*'
+
+  hello:
+    handler: handler.hello
+    events:
+      - http:
+          path: hello
+          method: get
+          cors: true
+          authorizer: authorizer
