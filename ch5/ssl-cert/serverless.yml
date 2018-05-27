@@ -1,0 +1,52 @@
+service: cncb-ssl-cert
+
+provider:
+  name: aws
+  # cfnRole: arn:aws:iam::<account-number>:role/cfnRole
+
+plugins:
+ - serverless-spa-deploy
+ - serverless-spa-config
+
+custom:
+  spa:
+    files:
+      - source: ./build
+        globs: '**/*'
+  dns:
+    hostedZoneId:
+      Ref: HostedZone
+    validationDomain: example.com
+    domainName: cncb-${opt:stage}.${self:custom.dns.validationDomain}
+    wildcard: '*.${self:custom.dns.domainName}'
+    endpoint: site.${self:custom.dns.domainName}
+  cdn:
+    acmCertificateArn: 
+      Ref: WildcardCertificate
+    # logging:
+    #   bucketName: ${cf:cncb-account-as-code-${opt:stage}.AuditBucketName}
+
+resources:
+  Resources:
+    HostedZone: 
+      Type: AWS::Route53::HostedZone
+      Properties: 
+        Name: ${self:custom.dns.domainName}
+
+    WildcardCertificate:
+      Type: AWS::CertificateManager::Certificate
+      Properties:
+        DomainName: ${self:custom.dns.wildcard}
+        DomainValidationOptions:
+          - DomainName: ${self:custom.dns.wildcard}
+            ValidationDomain: ${self:custom.dns.validationDomain}
+        SubjectAlternativeNames:
+          - ${self:custom.dns.domainName}
+
+  Outputs:
+    HostedZone:
+      Value:
+        Ref: HostedZone
+    WildcardCertificateArn:
+      Value:
+        Ref: WildcardCertificate
