@@ -1,0 +1,57 @@
+service: cncb-waf
+
+provider:
+  name: aws
+
+plugins:
+ - serverless-spa-deploy
+ - serverless-spa-config
+
+custom:
+  spa:
+    files:
+      - source: ./build
+        globs: '**/*'
+  cdn:
+    webACLId: 
+      Ref: WebACL
+
+resources:
+  Resources:
+    WhitelistIPSet: 
+      Type: AWS::WAF::IPSet
+      Properties: 
+        Name: IPSet for whitelisted IP adresses
+        IPSetDescriptors: 
+          - Type: IPV4
+            Value: 0.0.0.1/32
+
+    WhitelistRule: 
+      Type: AWS::WAF::Rule
+      Properties: 
+        Name: WhitelistRule
+        MetricName: WhitelistRule
+        Predicates: 
+          - DataId: 
+              Ref: WhitelistIPSet
+            Negated: false
+            Type: IPMatch  
+        
+    WebACL: 
+      Type: AWS::WAF::WebACL
+      Properties: 
+        Name: Master WebACL
+        DefaultAction: 
+          Type: BLOCK
+        MetricName: MasterWebACL
+        Rules: 
+          - Action: 
+              Type: ALLOW
+            Priority: 1
+            RuleId: 
+              Ref: WhitelistRule        
+
+  Outputs:
+    WebACLId:
+      Value:
+        Ref: WebACL
