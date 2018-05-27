@@ -1,0 +1,58 @@
+service: cncb-jwt-filter
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  endpointType: REGIONAL
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+      Resource:
+        - Fn::GetAtt:
+            - Table
+            - Arn
+  environment:
+    TABLE_NAME:
+      Ref: Table
+
+functions:
+  save:
+    handler: handler.save
+    events:
+      - http:
+          path: things
+          method: post
+          cors: true
+          authorizer:
+            arn: ${cf:cncb-cognito-pool-${opt:stage}.userPoolArn}
+  get:
+    handler: handler.get
+    events:
+      - http:
+          path: things/{sub}/{id}
+          method: get
+          cors: true
+          authorizer:
+            arn: ${cf:cncb-cognito-pool-${opt:stage}.userPoolArn}
+
+resources:
+  Resources:
+    Table:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${opt:stage}-${self:service}-things
+        AttributeDefinitions:
+          - AttributeName: sub
+            AttributeType: S
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: sub
+            KeyType: HASH
+          - AttributeName: id
+            KeyType: RANGE
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1

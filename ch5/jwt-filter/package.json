@@ -1,0 +1,16 @@
+{
+  "name": "cncb-jwt-filter",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "sls package -r us-east-1",
+    "dp:lcl": "sls deploy -r us-east-1",
+    "rm:lcl": "sls remove -r us-east-1"
+  },
+  "dependencies": {
+    "uuid": "^3.1.0"
+  },
+  "devDependencies": {
+    "serverless": "1.26.0"
+  }
+}
