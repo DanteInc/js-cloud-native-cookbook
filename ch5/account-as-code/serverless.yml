@@ -1,0 +1,104 @@
+service: cncb-account-as-code
+
+provider:
+  name: aws
+  # cfnRole: arn:aws:iam::${self:custom.accountNumber}:role/cfnRole
+
+custom:
+  accountNumber: 123456789012
+
+resources:
+  Resources:
+    AuditBucket:
+      Type: AWS::S3::Bucket
+      DeletionPolicy: Retain
+      Properties:
+        VersioningConfiguration:
+          Status: Enabled
+      LifecycleConfiguration: ${file(includes.yml):LifecycleConfiguration}
+    AuditBucketPolicy: ${file(includes.yml):AuditBucketPolicy}
+    CloudTrail: 
+      DependsOn: 
+        - AuditBucketPolicy
+      Type: AWS::CloudTrail::Trail
+      Properties: 
+        S3BucketName: 
+          Ref: AuditBucket
+        S3KeyPrefix: aws-cloudtrail
+        IsLogging: true
+        IsMultiRegionTrail: true
+        IncludeGlobalServiceEvents: true
+
+    CloudFormationServiceRole:
+      Type: AWS::IAM::Role
+      Properties: 
+        RoleName: cfnRole
+        AssumeRolePolicyDocument: 
+          Statement: 
+            - Effect: Allow
+              Principal: 
+                Service: 
+                  - cloudformation.amazonaws.com
+              Action: 
+                - sts:AssumeRole
+        ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/AdministratorAccess
+    ExecuteCloudFormationPolicy: 
+      Type: AWS::IAM::ManagedPolicy
+      Properties:
+        PolicyDocument: ${file(includes.yml):ExecuteCloudFormationPolicy}
+    CiCdUser: 
+      Type: AWS::IAM::User
+      Properties:
+        ManagedPolicyArns:
+          - Ref: ExecuteCloudFormationPolicy 
+
+    AdminUserGroup: 
+      Type: AWS::IAM::Group
+      Properties: 
+        ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/AdministratorAccess
+    ReadOnlyUserGroup: 
+      Type: AWS::IAM::Group
+      Properties: 
+        ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/ReadOnlyAccess
+    PowerUserGroup: 
+      Type: AWS::IAM::Group
+      Properties: 
+        ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/PowerUserAccess
+          - arn:aws:iam::aws:policy/ReadOnlyAccess
+    ManageAccessKey:
+      Condition: IsDev
+      Type: AWS::IAM::ManagedPolicy
+      Properties:
+        PolicyDocument: ${file(includes.yml):ManageAccessKey}
+        Groups:
+          - Ref: PowerUserGroup
+    MfaOrHqRequired:
+      Condition: Exclude
+      Type: AWS::IAM::ManagedPolicy
+      Properties:
+        PolicyDocument: ${file(includes.yml):MfaOrHqRequired}
+        Groups:
+          - Ref: AdminUserGroup
+          - Ref: ReadOnlyUserGroup
+          - Ref: PowerUserGroup
+  
+  Outputs:
+    AccountNumber:
+      Value: ${self:custom.accountNumber}
+    AuditBucketName:
+      Value:
+        Ref: AuditBucket
+  
+  Conditions:
+    IsDev: 
+      Fn::Equals:
+        - ${opt:stage}
+        - dev   
+    Exclude: 
+      Fn::Equals:
+        - false
+        - true 

@@ -1,0 +1,103 @@
+AuditBucketPolicy:
+  Type: AWS::S3::BucketPolicy
+  Properties: 
+    Bucket: 
+      Ref: AuditBucket
+    PolicyDocument:
+      Version: '2012-10-17'
+      Statement:
+        - Effect: Allow
+          Principal:
+            Service: cloudtrail.amazonaws.com
+          Action:
+            - s3:GetBucketAcl
+          Resource:
+            Fn::Join:
+              - ''
+              - - 'arn:aws:s3:::'
+                - Ref: AuditBucket
+        - Effect: Allow
+          Principal:
+            Service: cloudtrail.amazonaws.com
+          Action:
+            - s3:PutObject
+          Resource:
+            Fn::Join:
+              - ''
+              - - 'arn:aws:s3:::'
+                - Ref: AuditBucket
+                - '/aws-cloudtrail/AWSLogs/'
+                - Ref: AWS::AccountId
+                - '/*'
+            Condition:
+              StringEquals:
+                s3:x-amz-acl: bucket-owner-full-control
+
+LifecycleConfiguration:
+  Rules:
+    - Prefix: aws-cloudfront/
+      ExpirationInDays: 365
+      Status: Enabled
+      Transitions:
+        - StorageClass: STANDARD_IA
+          TransitionInDays: 30
+    - Prefix: aws-cloudtrail/
+      ExpirationInDays: 365
+      Status: Enabled
+      Transitions:
+        - StorageClass: STANDARD_IA
+          TransitionInDays: 30
+    - Prefix: backup/
+      NoncurrentVersionExpirationInDays: 30
+      Status: Enabled
+
+ExecuteCloudFormationPolicy:
+  Version: '2012-10-17'
+  Statement:
+    - Effect: Allow
+      Action:
+        - 'cloudformation:*'
+        - 'cloudfront:CreateInvalidation'
+        - 's3:*'
+        - 'iam:Get*'
+        - 'iam:PassRole'
+      Resource: '*'
+
+ManageAccessKey:
+  Version: '2012-10-17'
+  Statement:
+    - Effect: Allow
+      Action:
+        - 'iam:*LoginProfile'
+        - 'iam:*AccessKey*'
+        - 'iam:*SSHPublicKey*'
+      Resource: 
+        Fn::Join:      
+          - '$'
+          - - Fn::Join:
+              - ':'
+              - - 'arn:aws:iam:'
+                - ${self:custom.accountNumber}
+                - 'user/'
+            - '{aws:username}'
+    - Effect: Allow
+      Action:
+        - 'iam:ListAccount*'
+        - 'iam:GetAccountSummary'
+        - 'iam:GetAccountPasswordPolicy'
+        - 'iam:ListUsers'
+      Resource: '*'
+              
+MfaOrHqRequired:
+  Version: '2012-10-17'
+  Statement:
+    - Effect: Deny
+      Action: '*'
+      Resource: '*'
+      Condition:
+        NotIpAddress:
+          aws:SourceIp:
+            - '0.0.0.1'
+        Bool:
+          aws:MultiFactorAuthPresent: false
+
