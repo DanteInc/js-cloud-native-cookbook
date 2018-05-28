@@ -1,0 +1,65 @@
+service: cncb-cognito-pool
+
+provider:
+  name: aws
+  # cfnRole: arn:aws:iam::<account-number>:role/cfnRole
+
+resources:
+  Resources:
+    CognitoUserPoolCncb:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: cncb-${opt:stage}
+        AdminCreateUserConfig:
+          AllowAdminCreateUserOnly: false
+        Schema:
+          - AttributeDataType: 'String'
+            DeveloperOnlyAttribute: false
+            Mutable: true
+            Name: 'email'
+            Required: true
+          - AttributeDataType: 'String'
+            DeveloperOnlyAttribute: false
+            Mutable: true
+            Name: 'role'
+            Required: false
+        AliasAttributes:
+          - email
+        AutoVerifiedAttributes:
+          - email
+    CognitoUserPoolCncbClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        UserPoolId:
+          Ref: CognitoUserPoolCncb
+
+  Outputs:
+    userPoolId:
+      Value: 
+        Ref: CognitoUserPoolCncb
+    userPoolProviderName:
+      Value: 
+        Fn::GetAtt: [ CognitoUserPoolCncb, ProviderName ]
+    userPoolProviderURL:
+      Value: 
+        Fn::GetAtt: [ CognitoUserPoolCncb, ProviderURL ]
+    userPoolArn:
+      Value: 
+        Fn::GetAtt: [ CognitoUserPoolCncb, Arn ]
+    userPoolClientId:
+      Value: 
+        Ref: CognitoUserPoolCncbClient
+
+plugins:
+  - cognito-plugin
+
+custom:
+  pool:
+    domain: cncb-${opt:stage}
+    allowedOAuthFlows: ['implicit']
+    allowedOAuthFlowsUserPoolClient: true
+    allowedOAuthScopes: ['aws.cognito.signin.user.admin', 'email', 'openid', 'phone', 'profile']
+    callbackURLs: ['http://localhost:3000/signin']
+    logoutURLs: ['http://localhost:3000/signout']
+    refreshTokenValidity: 30
+    supportedIdentityProviders: ['COGNITO']
