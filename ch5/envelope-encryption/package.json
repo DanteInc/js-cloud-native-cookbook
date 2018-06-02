@@ -1,0 +1,17 @@
+{
+  "name": "cncb-envelope-encryption",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "sls package -r us-east-1 -s test",
+    "dp:lcl": "sls deploy -v -r us-east-1",
+    "rm:lcl": "sls remove -r us-east-1"
+  },
+  "dependencies": {
+    "crypto-js": "^3.1.9-1",
+    "uuid": "^3.1.0"
+  },
+  "devDependencies": {
+    "serverless": "1.26.0"
+  }
+}

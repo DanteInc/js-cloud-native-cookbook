@@ -1,0 +1,90 @@
+service: cncb-envelope-encryption
+
+provider:
+  name: aws
+  # cfnRole: arn:aws:iam::<account-number>:role/cfnRole
+  runtime: nodejs8.10
+  endpointType: REGIONAL
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+      Resource:
+        - Fn::GetAtt:
+            - Table
+            - Arn
+    - Effect: Allow
+      Action:
+        - kms:GenerateDataKey
+        - kms:Decrypt
+      Resource:
+        - Fn::GetAtt:
+            - Key
+            - Arn
+  environment:
+    TABLE_NAME:
+      Ref: Table
+    KEY_ALIAS:
+      Ref: KeyAlias
+
+functions:
+  save:
+    handler: handler.save
+    events:
+      - http:
+          path: things
+          method: post
+          cors: true
+  get:
+    handler: handler.get
+    events:
+      - http:
+          path: things/{id}
+          method: get
+          cors: true
+
+resources:
+  Resources:
+    Table:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${opt:stage}-${self:service}-things
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+
+    Key:
+      Type: AWS::KMS::Key
+      Properties:
+        KeyPolicy:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal: '*'
+              Action: 'kms:*'
+              Resource: '*'
+
+    KeyAlias:
+      Type: AWS::KMS::Alias
+      Properties:
+        AliasName: alias/${self:service}-${opt:stage}
+        TargetKeyId:
+          Ref: Key
+
+  Outputs:
+    KeyId:
+      Value: 
+        Ref: Key
+    KeyArn:
+      Value: 
+        Fn::GetAtt: [ Key, Arn ]
+    KeyAlias:
+      Value: 
+        Ref: KeyAlias
