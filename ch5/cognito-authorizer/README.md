@@ -1,7 +1,7 @@
 # Securing an API gateway with OAuth 2.0
 
 ## How to do it...
-1. sls create --template-url https://github.com/danteinc/js-cloud-native-cookbook/tree/master/ch5/create-cognito-authorizer --path cncb-cognito-authorizer
+1. sls create --template-url https://github.com/danteinc/js-cloud-native-cookbook/tree/master/ch5/cognito-authorizer --path cncb-cognito-authorizer
 2. cd cncb-cognito-authorizer
 3. npm install
 4. npm test
