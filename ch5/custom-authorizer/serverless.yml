@@ -10,8 +10,8 @@ functions:
   authorizer:
     handler: handler.authorize
     environment:
-      AUD: ${cf:cncb-cognito-pool-${opt:stage}.aud}
-      ISS: ${cf:cncb-cognito-pool-${opt:stage}.iss}
+      AUD: ${cf:cncb-cognito-pool-${opt:stage}.userPoolClientId}
+      ISS: ${cf:cncb-cognito-pool-${opt:stage}.userPoolProviderURL}
       JWKS: ${self:functions.authorizer.environment.ISS}/.well-known/jwks.json
       DEBUG: '*'
 

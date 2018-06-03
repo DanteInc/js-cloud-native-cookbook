@@ -78,6 +78,11 @@ const generatePolicy = (uow) => {
       policyDocument: {
         Version: '2012-10-17',
         Statement: [{ Action: 'execute-api:Invoke', Effect, Resource }],
+        // Condition: {
+        //   DateLessThan: {
+        //     'aws:CurrentTime': new Date(claims.exp).toISOString()
+        //   },
+        // }
       },
       context: claims,
     },

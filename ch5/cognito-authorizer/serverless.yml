@@ -2,6 +2,7 @@ service: cncb-cognito-authorizer
 
 provider:
   name: aws
+  # cfnRole: arn:aws:iam::<account-number>:role/cfnRole
   runtime: nodejs8.10
   endpointType: REGIONAL
 

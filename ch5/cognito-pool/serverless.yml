@@ -32,6 +32,18 @@ resources:
       Properties:
         UserPoolId:
           Ref: CognitoUserPoolCncb
+    AuthorRole:
+      Type: AWS::Cognito::UserPoolGroup
+      Properties:
+        GroupName: Author
+    ManagerRole:
+      Type: AWS::Cognito::UserPoolGroup
+      Properties:
+        GroupName: Manager
+    AdminRole:
+      Type: AWS::Cognito::UserPoolGroup
+      Properties:
+        GroupName: Admin  
 
   Outputs:
     userPoolId:
@@ -49,6 +61,12 @@ resources:
     userPoolClientId:
       Value: 
         Ref: CognitoUserPoolCncbClient
+    loginURL:
+      Value: 
+        Fn::Join:
+          - ''
+          - - https://cncb-${opt:stage}.auth.${opt:region}.amazoncognito.com/login?redirect_uri=http://localhost:3000/signin&response_type=token&client_id=
+            - Ref: CognitoUserPoolCncbClient
 
 plugins:
   - cognito-plugin
