@@ -1,0 +1,17 @@
+service: cncb-graphql-jwt
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  # cfnRole: arn:aws:iam::<account-number>:role/cfnRole
+
+functions:
+  graphql:
+    handler: handler.graphql
+    events:
+      - http:
+          path: graphql
+          method: post
+          cors: true
+          authorizer:
+            arn: ${cf:cncb-cognito-pool-${opt:stage}.userPoolArn}
