@@ -77,9 +77,17 @@ const removeDomain = (serverless) => {
       getUserPoolId(serverless)
         .then(data => ({ userPoolId: data }))
     )
-    .then(uow => uow.pool.Domain ? uow :
+    .then(uow =>
+      serverless.getProvider('aws').request('CognitoIdentityServiceProvider', 'describeUserPool', {
+        UserPoolId: uow.userPoolId,
+      })
+        // .then(tap)
+        .then(data => ({ ...uow, pool: { ...data.UserPool } }))
+    )
+    .then(uow => !uow.pool.Domain ? uow :
       serverless.getProvider('aws').request('CognitoIdentityServiceProvider', 'deleteUserPoolDomain', {
         UserPoolId: uow.userPoolId,
+        Domain: uow.pool.Domain,
       })
         // .then(tap)
     );
