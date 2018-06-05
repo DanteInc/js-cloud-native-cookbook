@@ -1,0 +1,98 @@
+service: cncb-dr-src1-account
+
+provider:
+  name: aws
+  # cfnRole: arn:aws:iam::<account-number>:role/cfnRole
+  runtime: nodejs8.10
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+      Resource:
+        - Fn::Join:
+          - ''
+          - - Fn::GetAtt: [ Src1Bucket1, Arn ]
+            - '*'
+
+custom:
+  replicationBucketArn: arn:aws:s3:::cncb-${opt:stage}-us-west-2-src1-bucket1-dr
+  recovery:
+    accountNumber: '#{AWS::AccountId}' # using same account to simplify recipe
+
+plugins:
+  - serverless-pseudo-parameters
+
+functions:
+  load:
+    handler: handler.load
+    environment:
+      BUCKET_NAME:
+        Ref: Src1Bucket1
+  
+resources:
+  Resources:
+    Src1Bucket1:
+      Type: AWS::S3::Bucket
+      DeletionPolicy: Retain
+      Properties:
+        BucketName: cncb-${opt:stage}-us-east-1-src1-bucket1
+        VersioningConfiguration:
+          Status: Enabled
+        ReplicationConfiguration:
+          Role: arn:aws:iam::#{AWS::AccountId}:role/${self:service}-${opt:stage}-${opt:region}-replicate
+          Rules:
+            - Destination:
+                Bucket: ${self:custom.replicationBucketArn}
+                StorageClass: STANDARD_IA
+                Account: ${self:custom.recovery.accountNumber}
+                AccessControlTranslation:
+                  Owner: Destination
+              Status: Enabled
+              Prefix: ''
+
+    Src1Bucket1ReplicationRole:
+      DependsOn: Src1Bucket1
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: ${self:service}-${opt:stage}-${opt:region}-replicate
+        AssumeRolePolicyDocument:
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - s3.amazonaws.com
+              Action:
+                - sts:AssumeRole
+        Policies:
+          - PolicyName: replicate
+            PolicyDocument:
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - s3:GetReplicationConfiguration
+                    - s3:ListBucket
+                  Resource:
+                    Fn::GetAtt: [ Src1Bucket1, Arn ]
+                - Effect: Allow
+                  Action:
+                    - s3:GetObjectVersion
+                    - s3:GetObjectVersionAcl
+                  Resource:
+                    - Fn::Join:
+                      - ''
+                      - - Fn::GetAtt: [ Src1Bucket1, Arn ]
+                        - '*'
+                - Effect: Allow
+                  Action:
+                    - s3:ReplicateObject
+                    - s3:ReplicateDelete
+                    - s3:ObjectOwnerOverrideToBucketOwner
+                  Resource: ${self:custom.replicationBucketArn}/*
+       
+  Outputs:
+    Src1Bucket1Name:
+      Value:
+        Ref: Src1Bucket1
+    Src1Bucket1Arn:
+      Value:
+        Fn::GetAtt: [ Src1Bucket1, Arn ]

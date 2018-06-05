@@ -1,0 +1,53 @@
+service: cncb-dr-recovery-account
+
+provider:
+  name: aws
+  # cfnRole: arn:aws:iam::<account-number>:role/cfnRole
+
+custom:
+  accounts:
+    src1:
+      accountNumber: '#{AWS::AccountId}' # using same account to simplify recipe
+
+plugins:
+  - serverless-pseudo-parameters
+
+resources:
+  Resources:
+    DrSrc1Bucket1:
+      Type: AWS::S3::Bucket
+      DeletionPolicy: Retain
+      Properties:
+        BucketName: cncb-${opt:stage}-us-west-1-src1-bucket1-dr
+        VersioningConfiguration:
+          Status: Enabled
+    DrSrc1Bucket1Policy: 
+      Type: AWS::S3::BucketPolicy
+      Properties: 
+        Bucket: 
+          Ref: DrSrc1Bucket1
+        PolicyDocument:
+          Statement:
+            - Effect: Allow
+              Principal:
+                AWS: arn:aws:iam::${self:custom.accounts.src1.accountNumber}:root
+              Action:
+                - s3:ReplicateDelete
+                - s3:ReplicateObject
+                - s3:ObjectOwnerOverrideToBucketOwner
+              Resource:
+                - Fn::Join:
+                  - ''
+                  - - Fn::GetAtt: [ DrSrc1Bucket1, Arn ]
+                    - '/*'
+  
+  Outputs:
+    DrSrc1Bucket1Name:
+      Value:
+        Ref: DrSrc1Bucket1
+    DrSrc1Bucket1Arn:
+      Value:
+        Fn::GetAtt: [ DrSrc1Bucket1, Arn ]
+       
+        
+        
