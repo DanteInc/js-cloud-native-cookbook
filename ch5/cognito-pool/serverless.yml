@@ -2,7 +2,7 @@ service: cncb-cognito-pool
 
 provider:
   name: aws
-  # cfnRole: arn:aws:iam::<account-number>:role/cfnRole
+  # cfnRole: arn:aws:iam::<account-number>:role/${opt:stage}-cfnRole
 
 resources:
   Resources:
@@ -36,14 +36,20 @@ resources:
       Type: AWS::Cognito::UserPoolGroup
       Properties:
         GroupName: Author
+        UserPoolId:
+          Ref: CognitoUserPoolCncb
     ManagerRole:
       Type: AWS::Cognito::UserPoolGroup
       Properties:
         GroupName: Manager
+        UserPoolId:
+          Ref: CognitoUserPoolCncb
     AdminRole:
       Type: AWS::Cognito::UserPoolGroup
       Properties:
         GroupName: Admin  
+        UserPoolId:
+          Ref: CognitoUserPoolCncb
 
   Outputs:
     userPoolId:

@@ -2,7 +2,7 @@ service: cncb-account-as-code
 
 provider:
   name: aws
-  # cfnRole: arn:aws:iam::${self:custom.accountNumber}:role/cfnRole
+  # cfnRole: arn:aws:iam::${self:custom.accountNumber}:role/${opt:stage}-cfnRole
 
 custom:
   accountNumber: 123456789012
@@ -15,7 +15,7 @@ resources:
       Properties:
         VersioningConfiguration:
           Status: Enabled
-      LifecycleConfiguration: ${file(includes.yml):LifecycleConfiguration}
+        LifecycleConfiguration: ${file(includes.yml):LifecycleConfiguration}
     AuditBucketPolicy: ${file(includes.yml):AuditBucketPolicy}
     CloudTrail: 
       DependsOn: 
@@ -32,15 +32,8 @@ resources:
     CloudFormationServiceRole:
       Type: AWS::IAM::Role
       Properties: 
-        RoleName: cfnRole
-        AssumeRolePolicyDocument: 
-          Statement: 
-            - Effect: Allow
-              Principal: 
-                Service: 
-                  - cloudformation.amazonaws.com
-              Action: 
-                - sts:AssumeRole
+        RoleName: ${opt:stage}-cfnRole
+        AssumeRolePolicyDocument: ${file(includes.yml):CloudFormationServiceRolePolicy}
         ManagedPolicyArns:
           - arn:aws:iam::aws:policy/AdministratorAccess
     ExecuteCloudFormationPolicy: 

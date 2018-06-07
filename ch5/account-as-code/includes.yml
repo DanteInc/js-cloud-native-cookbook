@@ -29,9 +29,9 @@ AuditBucketPolicy:
                 - '/aws-cloudtrail/AWSLogs/'
                 - Ref: AWS::AccountId
                 - '/*'
-            Condition:
-              StringEquals:
-                s3:x-amz-acl: bucket-owner-full-control
+          Condition:
+            StringEquals:
+              s3:x-amz-acl: bucket-owner-full-control
 
 LifecycleConfiguration:
   Rules:
@@ -62,6 +62,15 @@ ExecuteCloudFormationPolicy:
         - 'iam:Get*'
         - 'iam:PassRole'
       Resource: '*'
+
+CloudFormationServiceRolePolicy:
+  Statement: 
+    - Effect: Allow
+      Principal: 
+        Service: 
+          - cloudformation.amazonaws.com
+      Action: 
+        - sts:AssumeRole
 
 ManageAccessKey:
   Version: '2012-10-17'

@@ -2,7 +2,7 @@ service: cncb-ssl-cert
 
 provider:
   name: aws
-  # cfnRole: arn:aws:iam::<account-number>:role/cfnRole
+  # cfnRole: arn:aws:iam::<account-number>:role/${opt:stage}-cfnRole
 
 plugins:
  - serverless-spa-deploy

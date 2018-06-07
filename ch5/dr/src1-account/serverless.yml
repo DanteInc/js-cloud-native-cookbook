@@ -2,7 +2,7 @@ service: cncb-dr-src1-account
 
 provider:
   name: aws
-  # cfnRole: arn:aws:iam::<account-number>:role/cfnRole
+  # cfnRole: arn:aws:iam::<account-number>:role/${opt:stage}-cfnRole
   runtime: nodejs8.10
   iamRoleStatements:
     - Effect: Allow
