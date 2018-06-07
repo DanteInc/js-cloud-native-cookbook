@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "test": "sls package -r us-east-1 -s test",
+    "test": "sls package -r us-east-1",
     "dp:lcl": "sls deploy -v -r us-east-1",
     "rm:lcl": "sls remove -r us-east-1"
   },
