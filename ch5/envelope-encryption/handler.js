@@ -6,7 +6,7 @@ const encrypt = (thing) => {
   console.log('thing: %j', thing);
 
   const params = {
-    KeyId: process.env.KEY_ALIAS,
+    KeyId: process.env.MASTER_KEY_ALIAS,
     KeySpec: 'AES_256',
   };
 

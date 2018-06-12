@@ -20,13 +20,13 @@ provider:
         - kms:Decrypt
       Resource:
         - Fn::GetAtt:
-            - Key
+            - MasterKey
             - Arn
   environment:
     TABLE_NAME:
       Ref: Table
-    KEY_ALIAS:
-      Ref: KeyAlias
+    MASTER_KEY_ALIAS:
+      Ref: MasterKeyAlias
 
 functions:
   save:
@@ -60,7 +60,7 @@ resources:
           ReadCapacityUnits: 1
           WriteCapacityUnits: 1
 
-    Key:
+    MasterKey:
       Type: AWS::KMS::Key
       Properties:
         KeyPolicy:
@@ -71,20 +71,20 @@ resources:
               Action: 'kms:*'
               Resource: '*'
 
-    KeyAlias:
+    MasterKeyAlias:
       Type: AWS::KMS::Alias
       Properties:
         AliasName: alias/${self:service}-${opt:stage}
         TargetKeyId:
-          Ref: Key
+          Ref: MasterKey
 
   Outputs:
-    KeyId:
+    MasterKeyId:
       Value: 
-        Ref: Key
-    KeyArn:
+        Ref: MasterKey
+    MasterKeyArn:
       Value: 
-        Fn::GetAtt: [ Key, Arn ]
-    KeyAlias:
+        Fn::GetAtt: [ MasterKey, Arn ]
+    MasterKeyAlias:
       Value: 
-        Ref: KeyAlias
+        Ref: MasterKeyAlias
