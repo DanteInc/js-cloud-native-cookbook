@@ -3,7 +3,7 @@ const moment = require('moment');
 const uuid = require('uuid');
 
 module.exports.load = (thing, context, callback) => {
-    const id = uuid.v1(),
+    const id = uuid.v1();
     const now = moment().utc();
 
     const params = {
