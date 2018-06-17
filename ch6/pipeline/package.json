@@ -1,0 +1,16 @@
+{
+  "name": "cncb-pipeline",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "echo running unit tests...",
+    "test:int": "echo running integration tests...",
+    "dp:lcl": "sls deploy -v -r us-east-1 --acct dev",
+    "rm:lcl": "sls remove -r us-east-1 --acct dev",
+    "dp:stg:e": "sls deploy -v -r us-east-1 -s stg --acct dev",
+    "dp:prd:e": "sls deploy -v -r us-east-1 -s prd --acct prod"
+  },
+  "devDependencies": {
+    "serverless": "1.26.0"
+  }
+}

@@ -1,0 +1,31 @@
+image: node:8
+
+before_script:
+  - cp .npmrc-conf .npmrc
+  - npm install --unsafe-perm
+
+test:
+  stage: test
+  script:
+    - npm test
+    - npm run test:int
+
+stg-east:
+  stage: deploy
+  variables:
+    AWS_ACCESS_KEY_ID: $DEV_AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY: $DEV_AWS_SECRET_ACCESS_KEY
+  script:
+    - npm run dp:stg:e
+  except:
+    - master
+
+production-east:
+  stage: deploy
+  variables:
+    AWS_ACCESS_KEY_ID: $PROD_AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY: $PROD_AWS_SECRET_ACCESS_KEY
+  script:
+    - npm run dp:prd:e
+  only:
+    - master

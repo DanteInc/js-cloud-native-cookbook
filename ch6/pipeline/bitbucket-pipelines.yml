@@ -1,0 +1,30 @@
+image: node:8
+
+pipelines:
+  default:
+    - step:
+        script:
+          - cp .npmrc-conf .npmrc
+          - npm install
+          - npm test
+  branches:
+    task/*:
+      - step:
+          script:
+            - cp .npmrc-conf .npmrc
+            - npm install --unsafe-perm
+            - export AWS_ACCESS_KEY_ID=$DEV_AWS_ACCESS_KEY_ID
+            - export AWS_SECRET_ACCESS_KEY=$DEV_AWS_SECRET_ACCESS_KEY
+            - npm test
+            - npm run test:int
+            - npm run dp:stg:e
+    master:
+      - step:
+          script:
+            - cp .npmrc-conf .npmrc
+            - npm install --unsafe-perm
+            - export AWS_ACCESS_KEY_ID=$PRD_AWS_ACCESS_KEY_ID
+            - export AWS_SECRET_ACCESS_KEY=$PRD_AWS_SECRET_ACCESS_KEY
+            - npm test
+            - npm run test:int
+            - npm run dp:prd:e

@@ -1,0 +1,13 @@
+service: cncb-pipeline
+
+provider:
+  name: aws
+  # cfnRole: arn:aws:iam::${self:custom.accounts.${opt:acct}.accountNumber}:role/${opt:stage}-cfnRole
+
+custom:
+  accounts:
+    dev:
+      accountNumber: 123456789012
+    prod:
+      accountNumber: 210987654321
+
