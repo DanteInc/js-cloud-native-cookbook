@@ -1,0 +1,14 @@
+POST /
+content-type: application/x-amz-json-1.1
+x-amz-target: Kinesis_20131202.PutRecord
+host: kinesis.us-east-1.amazonaws.com
+body: {\"StreamName\":\"stg-cncb-event-stream-s1\",\"PartitionKey\":\"00000000-0000-0000-0000-000000000000\",\"Data\":\"eyJpZCI6IjVhMDNhYmQ4Y2E1ZTQ4YWIzYjBiOTU5NmU5Yjk4YjUwIiwidHlwZSI6InRoaW5nLWNyZWF0ZWQiLCJ0aW1lc3RhbXAiOjE1MjkxNzkzODAwMDAsInBhcnRpdGlvbktleSI6IjAwMDAwMDAwLTAwMDAtMDAwMC0wMDAwLTAwMDAwMDAwMDAwMCIsInRhZ3MiOnsicmVnaW9uIjoidXMtZWFzdC0xIn0sInRoaW5nIjp7Im9sZCI6e30sIm5ldyI6eyJuYW1lIjoidGhpbmcwIiwiaWQiOiIwMDAwMDAwMC0wMDAwLTAwMDAtMDAwMC0wMDAwMDAwMDAwMDAifX19\"}
+
+HTTP/1.1 200 OK
+x-amzn-requestid: 415db0ae-5637-4225-a700-f22e2a7f51f3
+x-amz-id-2: irrwTTTs7RwJAj0S+PuCshGzWk+f83UHnmr4TcJFQxPs+MIr8Nvsmd1ylpsCbxbzqs9IiC4eIQjr/IzH8dwrh7OPSvqXBSn+nYZez0l2bfI=
+date: Sun, 17 Jun 2018 04:58:50 GMT
+content-type: application/x-amz-json-1.1
+content-length: 110
+
+{"SequenceNumber":"49585487978807765990957385984928997062236759908188946434","ShardId":"shardId-000000000000"}

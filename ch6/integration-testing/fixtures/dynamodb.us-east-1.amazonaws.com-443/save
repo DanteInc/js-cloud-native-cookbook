@@ -1,0 +1,16 @@
+POST /
+content-type: application/x-amz-json-1.0
+x-amz-target: DynamoDB_20120810.PutItem
+host: dynamodb.us-east-1.amazonaws.com
+body: {\"TableName\":\"stg-cncb-integration-testing-things\",\"Item\":{\"id\":{\"S\":\"00000000-0000-0000-0000-000000000000\"},\"name\":{\"S\":\"thing0\"}}}
+
+HTTP/1.1 200 OK
+server: Server
+date: Fri, 15 Jun 2018 05:59:44 GMT
+content-type: application/x-amz-json-1.0
+content-length: 2
+connection: keep-alive
+x-amzn-requestid: ECUGR6AOBDC45NLA4SI4UMN4RRVV4KQNSO5AEMVJF66Q9ASUAAJG
+x-amz-crc32: 2745614147
+
+{}
