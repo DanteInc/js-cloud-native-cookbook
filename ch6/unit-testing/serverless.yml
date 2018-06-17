@@ -1,0 +1,80 @@
+service: cncb-unit-testing
+
+plugins:
+  - serverless-webpack
+
+provider:
+  name: aws
+  # cfnRole: arn:aws:iam::${self:custom.accounts.${opt:acct}.accountNumber}:role/${opt:stage}-cfnRole
+  runtime: nodejs8.10
+  endpointType: REGIONAL
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+      Resource:
+        - Fn::GetAtt:
+            - Table
+            - Arn
+    - Effect: Allow
+      Action:
+        - kinesis:PutRecord
+      Resource: ${cf:cncb-event-stream-${opt:stage}.streamArn}
+  environment:
+    TABLE_NAME:
+      Ref: Table
+
+custom:
+  webpack:
+    includeModules: true
+  accounts:
+    dev:
+      accountNumber: 123456789012
+    prod:
+      accountNumber: 210987654321
+
+functions:
+  save:
+    handler: src/save/index.handle
+    events:
+      - http:
+          path: things
+          method: post
+          cors: true
+  get:
+    handler: src/get/index.handle
+    events:
+      - http:
+          path: things/{id}
+          method: get
+          cors: true
+  trigger:
+    handler: src/trigger/index.handle
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt: [ Table, StreamArn ]
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
+    environment:
+      STREAM_NAME: ${cf:cncb-event-stream-${opt:stage}.streamName}
+
+resources:
+  Resources:
+    Table:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${opt:stage}-${self:service}-things
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
