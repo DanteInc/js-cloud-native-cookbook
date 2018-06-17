@@ -7,7 +7,7 @@ const _ = require('highland');
 
 export class Handler {
   constructor(streamName) {
-    this.stream = new Connector(streamName || process.env.STREAM_NAME);
+    this.stream = new Connector(streamName);
   }
 
   handle(event) {
@@ -21,7 +21,7 @@ export class Handler {
 }
 
 export const handle = (event, context, cb) => {
-  new Handler(process.env.TABLE_NAME)
+  new Handler(process.env.STREAM_NAME)
     .handle(event)
     .collect()
     .toCallback(cb);
