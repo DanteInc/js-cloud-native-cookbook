@@ -4,7 +4,7 @@ import * as aws from 'aws-sdk';
 
 import { Handler } from '../../../src/trigger';
 
-describe.only('trigger/index.js', () => {
+describe('trigger/index.js', () => {
   before(() => {
     require('baton-vcr-replay-for-aws-sdk');
     process.env.STREAM_NAME = 'stg-cncb-event-stream-s1';
