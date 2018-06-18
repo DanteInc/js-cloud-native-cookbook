@@ -1,0 +1,34 @@
+service: cncb-feature-flag
+
+provider:
+  name: aws
+  # cfnRole: arn:aws:iam::<account-number>:role/${opt:stage}-cfnRole
+
+plugins:
+  - serverless-spa-deploy
+
+custom:
+  spa:
+    files:
+      - source: ./build
+        globs: '**/*'
+        headers:
+          CacheControl: max-age=300
+
+resources:
+  Resources:
+    WebsiteBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        AccessControl: PublicRead
+        WebsiteConfiguration:
+          IndexDocument: index.html
+          ErrorDocument: index.html
+
+  Outputs:
+    WebsiteBucketName:
+      Value:
+        Ref: WebsiteBucket
+    WebsiteURL:
+      Value:
+        Fn::GetAtt: [ WebsiteBucket, WebsiteURL ]
