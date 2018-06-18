@@ -1,0 +1,3 @@
+@my:registry=https://npm.my.example.com/
+//npm.my.example.com/:_authToken=${NPM_TOKEN}
+//npm.my.example.com/:always-auth=true
