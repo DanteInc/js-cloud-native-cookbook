@@ -1,0 +1,71 @@
+{
+  "name": "cncb-contract-testing-async-downstream",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "clean": "rm -rf .nyc_output/ .webpack/ .serverless/ coverage/",
+    "lint": "npm run lint:js",
+    "lint:js": "eslint --fix --format=node_modules/eslint-formatter-pretty .",
+    "lint:staged": "lint-staged",
+    "pretest": "npm run clean && npm run lint",
+    "test": "better-npm-run test",
+    "test:int": "npm start -- --exec \"mocha --timeout 20000 --require babel-register --recursive ./test/helper.js ./test/int/**/*.test.js\"",
+    "start": "sls offline start --port 3001 --apiKey test-int-api-key-123456 -r us-east-1 -s stg --acct dev",
+    "dp:lcl": "sls deploy -v -r us-east-1 --acct dev",
+    "rm:lcl": "sls remove -r us-east-1 --acct dev",
+    "dp:stg:e": "sls deploy -v -r us-east-1 -s stg --acct dev",
+    "dp:prd:e": "sls deploy -v -r us-east-1 -s prd --acct prod"
+  },
+  "betterScripts": {
+    "test": {
+      "command": "nyc mocha --require babel-register --recursive ./test/helper.js ./test/unit/**/*.test.js",
+      "env": {
+        "NODE_ENV": "test"
+      }
+    }
+  },
+  "lint-staged": {
+    "*.js": "eslint"
+  },
+  "pre-commit": "lint:staged",
+  "devDependencies": {
+    "aws-sdk": "^2.94.0",
+    "aws-sdk-mock": "^1.7.0",
+    "babel-core": "^6.26.0",
+    "babel-eslint": "^8.2.2",
+    "babel-loader": "^7.1.4",
+    "babel-plugin-istanbul": "^4.1.5",
+    "babel-plugin-transform-async-to-module-method": "^6.24.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "baton-event-relay": "^1.0.0",
+    "baton-request-relay": "^1.0.0",
+    "baton-vcr-replay-for-aws-sdk": "^1.0.1",
+    "baton-vcr-serverless-plugin": "^1.0.0",
+    "better-npm-run": "0.1.0",
+    "chai": "^4.0.0",
+    "eslint": "^4.18.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-formatter-pretty": "^1.3.0",
+    "eslint-plugin-import": "^2.9.0",
+    "lint-staged": "^7.0.0",
+    "mocha": "^5.2.0",
+    "nyc": "^11.8.0",
+    "pre-commit": "^1.2.2",
+    "serverless": "^1.26.0",
+    "serverless-offline": "^3.25.4",
+    "serverless-webpack": "^5.0.0",
+    "sinon": "^5.0.0",
+    "sinon-chai": "^3.1.0",
+    "supertest": "^3.1.0",
+    "webpack": "^4.1.1",
+    "webpack-node-externals": "^1.6.0"
+  },
+  "dependencies": {
+    "babel-runtime": "6.26.0",
+    "bluebird": "^3.4.7",
+    "highland": "^2.13.0",
+    "uuid": "^3.2.1"
+  }
+}

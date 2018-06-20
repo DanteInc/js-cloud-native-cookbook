@@ -1,0 +1,16 @@
+POST /
+content-type: application/x-amz-json-1.0
+x-amz-target: DynamoDB_20120810.PutItem
+host: dynamodb.us-east-1.amazonaws.com
+body: {\"TableName\":\"stg-cncb-contract-testing-async-upstream-things\",\"Item\":{\"id\":{\"S\":\"00000000-0000-0000-0000-000000000000\"},\"name\":{\"S\":\"thing0\"}}}
+
+HTTP/1.1 200 OK
+server: Server
+date: Wed, 20 Jun 2018 03:38:06 GMT
+content-type: application/x-amz-json-1.0
+content-length: 2
+connection: keep-alive
+x-amzn-requestid: 94BULVS95GCK7O79DT618VIL0NVV4KQNSO5AEMVJF66Q9ASUAAJG
+x-amz-crc32: 2745614147
+
+{}
