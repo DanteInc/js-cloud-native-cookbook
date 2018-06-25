@@ -1,0 +1,31 @@
+{
+  "Records": [
+    {
+      "eventID": "5a03abd8ca5e48ab3b0b9596e9b98b50",
+      "eventName": "INSERT",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "us-east-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1529179380,
+        "Keys": {
+          "id": {
+            "S": "00000000-0000-0000-0000-000000000000"
+          }
+        },
+        "NewImage": {
+          "name": {
+            "S": "thing0"
+          },
+          "id": {
+            "S": "00000000-0000-0000-0000-000000000000"
+          }
+        },
+        "SequenceNumber": "100000000030260233023",
+        "SizeBytes": 86,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:us-east-1:123456789012:table/stg-cncb-contract-testing--async-things/stream/2018-06-16T19:55:14.324"
+    }
+  ]
+}
