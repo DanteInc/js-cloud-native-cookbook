@@ -1,0 +1,65 @@
+service: cncb-transitive-testing-customer-bff
+
+plugins:
+  - serverless-webpack
+  - baton-vcr-serverless-plugin
+  - serverless-offline
+
+provider:
+  name: aws
+  # cfnRole: arn:aws:iam::${self:custom.accounts.${opt:acct}.accountNumber}:role/${opt:stage}-cfnRole
+  runtime: nodejs8.10
+  endpointType: REGIONAL
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+      Resource:
+        - Fn::GetAtt:
+            - Table
+            - Arn
+  environment:
+    TABLE_NAME: ${opt:stage}-${self:service}-things
+
+custom:
+  webpack:
+    includeModules: true
+  accounts:
+    dev:
+      accountNumber: 123456789012
+    prod:
+      accountNumber: 210987654321
+
+functions:
+  listener:
+    handler: src/listener/index.handle
+    events:
+      - stream:
+          type: kinesis
+          arn: ${cf:cncb-event-stream-${opt:stage}.streamArn}
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
+  get:
+    handler: src/get/index.handle
+    events:
+      - http:
+          path: things/{id}
+          method: get
+          cors: true
+
+resources:
+  Resources:
+    Table:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.TABLE_NAME}
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
