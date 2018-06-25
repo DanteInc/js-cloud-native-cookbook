@@ -15,10 +15,7 @@ describe('trigger/index.js', () => {
     new Handler(process.env.STREAM_NAME).handle(TRIGGER)
       .collect()
       .tap((data) => {
-        expect(data).to.deep.equal([{
-          response: RESPONSE,
-          event: EVENT,
-        }]);
+        expect(data[0].event).to.deep.equal(EVENT);
       })
       .done(done);
   });

@@ -11,7 +11,7 @@ describe('get/index.js', () => {
     sinon.restore();
   });
 
-  it('should get', () => {
+  it('should get by id', () => {
     const TABLE_NAME = 't1';
     const ID = '00000000-0000-0000-0000-000000000000';
     const THING = { id: ID, name: 'thing0' };
