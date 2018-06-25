@@ -1,7 +1,6 @@
 import 'mocha';
 import { expect } from 'chai';
 import * as sinon from 'sinon';
-import Promise from 'bluebird';
 
 import Connector from '../../../src/connector/stream';
 
