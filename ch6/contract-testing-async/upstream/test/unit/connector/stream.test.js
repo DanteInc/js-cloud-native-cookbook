@@ -1,7 +1,6 @@
 import 'mocha';
 import { expect } from 'chai';
 import * as sinon from 'sinon';
-import Promise from 'bluebird';
 
 import Connector from '../../../src/connector/stream';
 
@@ -14,7 +13,7 @@ describe('connector/stream/index.js', () => {
     AWS.restore('Kinesis');
   });
 
-  it('should publish', () => {
+  it('should publish', async () => {
     const spy = sinon.spy((params, cb) => cb(null, {}));
     AWS.mock('Kinesis', 'putRecord', spy);
 
@@ -23,15 +22,14 @@ describe('connector/stream/index.js', () => {
       partitionKey: '1',
     };
 
-    return new Connector('s1').publish(EVENT)
-      .tap((data) => {
-        expect(spy.calledOnce).to.equal(true);
-        expect(spy.calledWith({
-          StreamName: 's1',
-          PartitionKey: EVENT.partitionKey,
-          Data: Buffer.from(JSON.stringify(EVENT)),
-        })).to.equal(true);
-        expect(data).to.deep.equal({});
-      });
+    const data = await new Connector('s1').publish(EVENT);
+
+    expect(spy.calledOnce).to.equal(true);
+    expect(spy.calledWith({
+      StreamName: 's1',
+      PartitionKey: EVENT.partitionKey,
+      Data: Buffer.from(JSON.stringify(EVENT)),
+    })).to.equal(true);
+    expect(data).to.deep.equal({});
   });
 });

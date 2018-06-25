@@ -1,7 +1,6 @@
 import 'mocha';
 import { expect } from 'chai';
 import * as sinon from 'sinon';
-import Promise from 'bluebird';
 
 import { handle, Handler } from '../../../src/get';
 import Connector from '../../../src/connector/db';
@@ -11,7 +10,7 @@ describe('get/index.js', () => {
     sinon.restore();
   });
 
-  it('should get', () => {
+  it('should get by id', async () => {
     const TABLE_NAME = 't1';
     const ID = '00000000-0000-0000-0000-000000000000';
     const THING = { id: ID, name: 'thing0' };
@@ -24,11 +23,10 @@ describe('get/index.js', () => {
     const stub = sinon.stub(Connector.prototype, 'getById')
       .returns(Promise.resolve(THING));
 
-    return new Handler(TABLE_NAME).handle(REQUEST)
-      .tap((data) => {
-        expect(stub.calledWith(ID)).to.equal(true);
-        expect(data).to.deep.equal(THING);
-      });
+    const data = await new Handler(TABLE_NAME).handle(REQUEST);
+
+    expect(stub.calledWith(ID)).to.equal(true);
+    expect(data).to.deep.equal(THING);
   });
 
   it('should return 200', (done) => {
