@@ -7,10 +7,10 @@ import { handle } from '../../../src/trigger';
 
 const EVENT = require('../../../fixtures/downstream-consumer-x/thing-created.json');
 
+require('baton-vcr-replay-for-aws-sdk');
+
 describe('contract/downstream-consumer-x', () => {
   before(() => {
-    const replay = require('baton-vcr-replay-for-aws-sdk');
-    replay.fixtures = './fixtures/downstream-consumer-x';
     process.env.STREAM_NAME = 'stg-cncb-event-stream-s1';
     aws.config.update({ region: 'us-east-1' });
   });

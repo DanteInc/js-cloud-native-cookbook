@@ -4,9 +4,10 @@ import * as aws from 'aws-sdk';
 
 import { Handler } from '../../../src/listener';
 
+require('baton-vcr-replay-for-aws-sdk');
+
 describe('listener/index.js', () => {
   before(() => {
-    require('baton-vcr-replay-for-aws-sdk');
     process.env.TABLE_NAME = 'stg-cncb-contract-testing-async-downstream-things';
     aws.config.update({ region: 'us-east-1' });
   });

@@ -8,7 +8,7 @@ export class Handler {
   }
 
   handle(event) {
-    console.log('e: %j', event);
+    // console.log('e: %j', event);
     return _(event.Records)
       .map(recordToEvent)
       .filter(forThingCreated)
@@ -19,7 +19,6 @@ export class Handler {
 }
 
 export const handle = (event, context, cb) => {
-  console.log('e1: %j', event);
   new Handler(process.env.TABLE_NAME)
     .handle(event)
     .collect()

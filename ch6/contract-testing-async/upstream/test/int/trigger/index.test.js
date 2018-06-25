@@ -4,9 +4,10 @@ import * as aws from 'aws-sdk';
 
 import { Handler } from '../../../src/trigger';
 
+require('baton-vcr-replay-for-aws-sdk');
+
 describe('trigger/index.js', () => {
   before(() => {
-    require('baton-vcr-replay-for-aws-sdk');
     process.env.STREAM_NAME = 'stg-cncb-event-stream-s1';
     aws.config.update({ region: 'us-east-1' });
   });
