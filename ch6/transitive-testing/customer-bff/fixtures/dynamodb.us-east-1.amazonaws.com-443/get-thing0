@@ -6,11 +6,11 @@ body: {\"TableName\":\"stg-cncb-transitive-testing-customer-bff-things\",\"Key\"
 
 HTTP/1.1 200 OK
 server: Server
-date: Sun, 17 Jun 2018 21:26:46 GMT
+date: Tue, 26 Jun 2018 02:18:07 GMT
 content-type: application/x-amz-json-1.0
-content-length: 82
+content-length: 111
 connection: keep-alive
-x-amzn-requestid: AQRBJO9RV5EKDR4R7K0G9G92L7VV4KQNSO5AEMVJF66Q9ASUAAJG
-x-amz-crc32: 3235158845
+x-amzn-requestid: D80HL3UFFGSQ83NGNKOHIC0HNFVV4KQNSO5AEMVJF66Q9ASUAAJG
+x-amz-crc32: 2367608478
 
-{"Item":{"id":{"S":"00000000-0000-0000-0000-000000000000"},"name":{"S":"thing0"}}}
+{"Item":{"id":{"S":"00000000-0000-0000-0000-000000000000"},"name":{"S":"thing0"},"asOf":{"N":"1529179380000"}}}

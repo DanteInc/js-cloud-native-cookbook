@@ -6,11 +6,11 @@ body: {\"TableName\":\"stg-cncb-transitive-testing-customer-bff-things\",\"Item\
 
 HTTP/1.1 200 OK
 server: Server
-date: Wed, 20 Jun 2018 05:29:46 GMT
+date: Tue, 26 Jun 2018 02:17:26 GMT
 content-type: application/x-amz-json-1.0
 content-length: 2
 connection: keep-alive
-x-amzn-requestid: NE4TMI0BQPG47I807I15CL9OJ7VV4KQNSO5AEMVJF66Q9ASUAAJG
+x-amzn-requestid: 2Q2FFGLM6D11KAEKJBDH4SFK1FVV4KQNSO5AEMVJF66Q9ASUAAJG
 x-amz-crc32: 2745614147
 
 {}

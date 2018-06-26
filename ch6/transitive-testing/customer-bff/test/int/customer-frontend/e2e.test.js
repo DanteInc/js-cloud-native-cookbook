@@ -17,9 +17,10 @@ const run = (fixture) => {
     .set(rec.request.headers)
     .send(rec.request.body)
 
+    // .expect((res) => {
+    //   console.log('Rec: %s', JSON.stringify(rec.response.body, null, 2));
+    //   console.log('Res: %s', JSON.stringify(res, null, 2));
+    // })
     .expect(rec.response.statusCode)
     .expect(rec.response.body);
-  // .expect((res) => {
-  //   console.log('%s', JSON.stringify(res, null, 2));
-  // });
 };

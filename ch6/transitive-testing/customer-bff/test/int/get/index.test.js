@@ -9,6 +9,7 @@ const client = supertest(endpoint);
 const THING = {
   id: '00000000-0000-0000-0000-000000000000',
   name: 'thing0',
+  asOf: 1529179380000,
 };
 
 describe('get/index.js', () => {

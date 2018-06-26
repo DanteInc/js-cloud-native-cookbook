@@ -6,8 +6,8 @@ content-type: application/json; charset=utf-8
 access-control-allow-origin: *
 cache-control: max-age=3
 vary: origin,accept-encoding
-date: Sun, 17 Jun 2018 21:26:46 GMT
+date: Tue, 26 Jun 2018 02:21:25 GMT
 connection: close
 transfer-encoding: chunked
 
-{"id":"00000000-0000-0000-0000-000000000000","name":"thing0"}
+{"id":"00000000-0000-0000-0000-000000000000","name":"thing0","asOf":1529179380000}

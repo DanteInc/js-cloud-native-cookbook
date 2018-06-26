@@ -15,6 +15,7 @@ describe('e2e/customer-frontend', () => {
       expect(JSON.parse(res.text)).to.deep.equal({
         id: '00000000-0000-0000-0000-000000000000',
         name: 'thing0',
+        asOf: 1529179380000
       });
     }));
 });
