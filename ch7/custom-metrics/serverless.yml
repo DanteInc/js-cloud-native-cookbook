@@ -1,0 +1,21 @@
+service: cncb-custom-metrics
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - http:
+          path: hello
+          method: get
+          cors: true
+    environment:
+      ACCOUNT_NAME: ${opt:account}
+      SERVERLESS_STAGE: ${opt:stage}
+      SERVERLESS_PROJECT: ${self:service}
+      MONITOR_ADVANCED: false
+      DEBUG: '*'
+      
