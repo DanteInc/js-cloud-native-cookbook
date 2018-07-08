@@ -1,0 +1,34 @@
+service: cncb-datadog-account
+
+provider:
+  name: aws
+  # cfnRole: arn:aws:iam::${self:custom.accountNumber}:role/${opt:stage}-cfnRole
+
+custom:
+  accountNumber: 123456789012
+
+functions:
+  hello:
+    handler: handler.hello
+
+resources:
+  Resources:
+    DatadogAWSIntegrationPolicy: 
+      Type: AWS::IAM::ManagedPolicy
+      Properties:
+        PolicyDocument: ${file(includes.yml):PolicyDocument}
+    DatadogAWSIntegrationRole:
+      Type: AWS::IAM::Role
+      Properties: 
+        RoleName: DatadogAWSIntegrationRole
+        AssumeRolePolicyDocument:
+          Statement:
+            Effect: Allow
+            Principal:
+              AWS: arn:aws:iam::464622532012:root
+            Action: sts:AssumeRole
+            Condition:
+              StringEquals:
+                sts:ExternalId: <copy value from datadog aws integration dialog>
+        ManagedPolicyArns:
+          - Ref: DatadogAWSIntegrationPolicy 
