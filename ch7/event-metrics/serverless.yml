@@ -1,0 +1,32 @@
+service: cncb-event-metrics
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - kinesis:PutRecords
+      Resource: ${cf:cncb-event-stream-${opt:stage}.streamArn}
+  environment:
+    ACCOUNT_NAME: ${opt:account, 'cncb'}
+    SERVERLESS_STAGE: ${opt:stage}
+    SERVERLESS_PROJECT: ${self:service}
+    MONITOR_ADVANCED: false
+    DEBUG: '*'
+
+functions:
+  listener:
+    handler: handler.listener
+    events:
+      - stream:
+          type: kinesis
+          arn: ${cf:cncb-event-stream-${opt:stage}.streamArn}
+          batchSize: 5000
+          startingPosition: TRIM_HORIZON
+    environment:
+      DATADOG_API_KEY: 123
+  simulate:
+    handler: simulator.simulate
+    environment:
+      STREAM_NAME: ${cf:cncb-event-stream-${opt:stage}.streamName}

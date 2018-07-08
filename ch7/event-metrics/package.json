@@ -1,0 +1,22 @@
+{
+  "name": "cncb-event-metrics",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "sls package -v -r us-east-1 -s test --account cncb",
+    "dp:lcl": "sls deploy -v -r us-east-1 --account cncb",
+    "rm:lcl": "sls remove -v -r us-east-1 --account cncb"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.218.1",
+    "serverless": "1.26.0"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "debug": "^3.1.0",
+    "highland": "^2.13.0",
+    "moment": "^2.22.1",
+    "serverless-datadog-metrics": "^1.0.1",
+    "uuid": "^3.2.1"
+  }
+}
