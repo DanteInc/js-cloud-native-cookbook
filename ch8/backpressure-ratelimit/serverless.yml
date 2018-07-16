@@ -1,0 +1,58 @@
+service: cncb-backpressure-ratelimit
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+      Resource:
+        - Fn::GetAtt:
+            - Table
+            - Arn
+    - Effect: Allow
+      Action:
+        - kinesis:PutRecords
+      Resource: ${cf:cncb-event-stream-${opt:stage}.streamArn}
+
+functions:
+  listener:
+    handler: handler.listener
+    timeout: 240 # headroom
+    memorySize: 1024
+    events:
+      - stream:
+          type: kinesis
+          arn: ${cf:cncb-event-stream-${opt:stage}.streamArn}
+          batchSize: 1000 # / (timeout / 2) < write capacity
+          startingPosition: LATEST # TRIM_HORIZON
+    environment:
+      WRITE_CAPACITY_UNITS: 10
+      SHARD_COUNT: 1
+      TABLE_NAME:
+        Ref: Table
+
+  simulate:
+    handler: simulator.simulate
+    timeout: 3
+    memorySize: 1024
+    environment:
+      STREAM_NAME: ${cf:cncb-event-stream-${opt:stage}.streamName}
+
+resources:
+  Resources:
+    Table:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${opt:stage}-${self:service}-things
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: ${self:functions.listener.environment.WRITE_CAPACITY_UNITS}
