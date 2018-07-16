@@ -62,7 +62,7 @@ const publish = (events) => {
   const params = {
     StreamName: process.env.STREAM_NAME,
     Records: events.map(e => ({
-      Data: new Buffer(JSON.stringify(e)),
+      Data: Buffer.from(JSON.stringify(e)),
       PartitionKey: e.partitionKey,
     })),
   };

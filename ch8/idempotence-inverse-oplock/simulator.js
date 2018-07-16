@@ -27,19 +27,19 @@ module.exports.simulate = (request, context, callback) => {
     Records: [
       {
         PartitionKey: thingId,
-        Data: new Buffer(JSON.stringify(createEvent)),
+        Data: Buffer.from(JSON.stringify(createEvent)),
       },
       {
         PartitionKey: thingId,
-        Data: new Buffer(JSON.stringify(createEvent)),
+        Data: Buffer.from(JSON.stringify(createEvent)),
       },
       {
         PartitionKey: thingId,
-        Data: new Buffer(JSON.stringify(updateEvent)),
+        Data: Buffer.from(JSON.stringify(updateEvent)),
       },
       {
         PartitionKey: thingId,
-        Data: new Buffer(JSON.stringify(createEvent)),
+        Data: Buffer.from(JSON.stringify(createEvent)),
       },
     ]
   };
