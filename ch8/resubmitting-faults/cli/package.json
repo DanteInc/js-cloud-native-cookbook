@@ -1,0 +1,17 @@
+{
+  "name": "cncb-resubmitting-faults",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "resubmit": "node index.js"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.45.0",
+    "bluebird": "^3.5.0",
+    "debug": "^2.6.4",
+    "highland": "^2.11.1",
+    "lodash": "^4.17.4",
+    "moment": "^2.18.1",
+    "yargs": "^7.1.0"
+  }
+}
