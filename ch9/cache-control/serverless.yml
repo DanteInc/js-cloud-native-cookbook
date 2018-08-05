@@ -1,0 +1,68 @@
+service: cncb-cache-control
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  endpointType: REGIONAL
+
+functions:
+  save:
+    handler: handler.save
+    events:
+      - http:
+          path: things
+          method: post
+          cors: true
+  get:
+    handler: handler.get
+    events:
+      - http:
+          path: things/{id}
+          method: get
+          cors: true
+
+resources:
+  Resources:
+    ApiDistribution:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          Comment: ${opt:stage}-${self:service} (${opt:region})
+          Origins:
+            - Id: ApiGateway
+              DomainName:
+                Fn::Join:
+                  - "."
+                  - - Ref: ApiGatewayRestApi
+                    - execute-api.${opt:region}.amazonaws.com
+              OriginPath: /${opt:stage}
+              CustomOriginConfig:
+                OriginProtocolPolicy: https-only
+                OriginSSLProtocols: [ TLSv1.2 ]
+          Enabled: true
+          HttpVersion: http2
+          PriceClass: PriceClass_100
+          DefaultCacheBehavior:
+            TargetOriginId: ApiGateway
+            AllowedMethods: [ DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT ]
+            CachedMethods: [ GET, HEAD, OPTIONS ]
+            Compress: true
+            ForwardedValues:
+              QueryString: true
+              Headers: [ Accept, Authorization, Content-Type, Referer ]
+              Cookies:
+                Forward: all
+            MinTTL: 0
+            DefaultTTL: 0
+            ViewerProtocolPolicy: https-only
+
+  Outputs:
+    ApiDistributionId:
+      Value:
+        Ref: ApiDistribution  
+    ApiDistributionEndpoint:
+      Value:
+        Fn::Join:
+          - ''
+          - - https://
+            - Fn::GetAtt: [ ApiDistribution, DomainName ]
