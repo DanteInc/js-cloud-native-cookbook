@@ -6,7 +6,7 @@ provider:
   iamRoleStatements:
     - Effect: Allow
       Action:
-        - dynamodb:BatchWrite
+        - dynamodb:BatchWriteItem
       Resource:
         - Fn::GetAtt:
             - Table

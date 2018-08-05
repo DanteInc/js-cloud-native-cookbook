@@ -16,7 +16,7 @@ module.exports.listener = (event, context, cb) => {
       Number(process.env.SHARD_COUNT) /
       Number(process.env.WRITE_BATCH_SIZE) / 10, 100)
 
-    .batch(process.env.WRITE_BATCH_SIZE)
+    .batch(Number(process.env.WRITE_BATCH_SIZE))
     .map(batchUow)
 
     .flatMap(batchWrite)
