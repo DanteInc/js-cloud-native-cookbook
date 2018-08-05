@@ -1,0 +1,51 @@
+service: cncb-session-consistency-service
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+        - dynamodb:GetItem
+        - dynamodb:Scan
+        - dynamodb:DeleteItem
+      Resource:
+        Fn::GetAtt: [ Table, Arn ]
+
+functions:
+  graphql:
+    handler: handler.graphql
+    events:
+      - http:
+          path: graphql
+          method: post
+          cors: true
+    environment:
+      TABLE_NAME:
+        Ref: Table
+  graphiql:
+    handler: handler.graphiql
+    events:
+      - http:
+          path: graphiql
+          method: get
+          cors: true
+    environment:
+      SERVERLESS_STAGE: ${opt:stage}
+
+resources:
+  Resources:
+    Table:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${opt:stage}-${self:service}-things
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1

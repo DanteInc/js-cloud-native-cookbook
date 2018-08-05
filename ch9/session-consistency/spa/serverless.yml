@@ -1,0 +1,33 @@
+service: cncb-session-consistency-spa
+
+provider:
+  name: aws
+
+plugins:
+  - serverless-spa-deploy
+
+custom:
+  spa:
+    files:
+      - source: ./build
+        globs: '**/*'
+        headers:
+          CacheControl: max-age=300
+
+resources:
+  Resources:
+    WebsiteBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        AccessControl: PublicRead
+        WebsiteConfiguration:
+          IndexDocument: index.html
+          ErrorDocument: index.html
+
+  Outputs:
+    WebsiteBucketName:
+      Value:
+        Ref: WebsiteBucket
+    WebsiteURL:
+      Value:
+        Fn::GetAtt: [ WebsiteBucket, WebsiteURL ]
