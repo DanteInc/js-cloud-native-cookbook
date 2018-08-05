@@ -1,0 +1,28 @@
+{
+    "plugins": [
+        [
+            "transform-async-to-module-method",
+            {
+                "module": "bluebird",
+                "method": "coroutine"
+            }
+        ]
+    ],
+    "presets": [
+        [
+        "env", {
+            "node": "8.10",
+            "useBuiltIns": true,
+            "debug": false
+        }],
+        "stage-2"
+    ],
+    "env": {
+        "test": {
+            "plugins": [
+                "istanbul",
+                "transform-runtime"
+            ]
+        }
+    }
+}
