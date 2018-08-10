@@ -1,0 +1,41 @@
+service: cncb-regional-health-check
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  endpointType: REGIONAL
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+      Resource:
+        - Fn::GetAtt: [Table, Arn]
+
+functions:
+  check:
+    handler: handler.check
+    events:
+      - http:
+          path: check
+          method: get
+    environment:
+      UNHEALTHY: false
+      TABLE_NAME:
+        Ref: Table
+
+resources:
+  Resources:
+    Table:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${opt:stage}-${self:service}-t1
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
