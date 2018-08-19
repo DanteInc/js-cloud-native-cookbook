@@ -1,0 +1,32 @@
+service: cncb-latency-based-routing
+
+plugins:
+  - serverless-multi-regional-plugin
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  endpointType: REGIONAL
+
+custom:
+  dns:
+    hostedZoneId: ZXXXXXXXXXXXXX
+    domainName: ${self:service}.example.com
+    regionalDomainName: ${opt:stage}-${self:custom.dns.domainName}
+    us-east-1:
+      acmCertificateArn: arn:aws:acm:us-east-1:xxxxxxxxxxxx:certificate/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+    us-west-2:
+      acmCertificateArn: arn:aws:acm:us-west-2:xxxxxxxxxxxx:certificate/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+  cdn:
+    region: us-east-1
+    aliases:
+      - ${self:custom.dns.domainName}
+    acmCertificateArn: ${self:custom.dns.us-east-1.acmCertificateArn}
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - http:
+          path: hello
+          method: get
