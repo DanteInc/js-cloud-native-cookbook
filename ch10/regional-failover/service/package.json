@@ -1,0 +1,16 @@
+{
+  "name": "cncb-regional-failover-service",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "sls package -r us-east-1 -s test",
+    "dp:lcl:e": "sls deploy -v -r us-east-1",
+    "dp:lcl:w": "sls deploy -v -r us-west-2",
+    "rm:lcl:e": "sls remove -v -r us-east-1",
+    "rm:lcl:w": "sls remove -v -r us-west-2"
+  },
+  "devDependencies": {
+    "serverless": "1.26.0",
+    "serverless-multi-regional-plugin": "^1.0.1"
+  }
+}

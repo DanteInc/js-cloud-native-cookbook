@@ -1,0 +1,49 @@
+service: cncb-regional-failover-check
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  endpointType: REGIONAL
+
+functions:
+  check:
+    handler: handler.check
+    events:
+      - http:
+          path: check
+          method: get
+    environment:
+      UNHEALTHY: false
+
+resources:
+  Resources:
+    Api5xxAlarm:
+      Type: AWS::CloudWatch::Alarm
+      Properties:
+        Namespace: AWS/ApiGateway
+        MetricName: 5XXError
+        Dimensions:
+          - Name: ApiName
+            Value: ${opt:stage}-${self:service}
+        Statistic: Minimum
+        ComparisonOperator: GreaterThanThreshold
+        Threshold: 0
+        Period: 60
+        EvaluationPeriods: 1
+
+    ApiHealthCheck:
+      DependsOn: Api5xxAlarm
+      Type: AWS::Route53::HealthCheck
+      Properties:
+        HealthCheckConfig:
+          Type: CLOUDWATCH_METRIC
+          AlarmIdentifier:
+            Name:
+              Ref: Api5xxAlarm
+            Region: ${opt:region}
+          InsufficientDataHealthStatus: LastKnownStatus
+        
+  Outputs:
+    ApiHealthCheckId:
+      Value:
+        Ref: ApiHealthCheck
