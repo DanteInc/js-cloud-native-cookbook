@@ -1,0 +1,136 @@
+service: cncb-round-robin-replication
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+        - s3:PutObjectAcl
+        - s3:GetObject
+      Resource:
+        - Fn::Join:
+          - ''
+          - - Fn::GetAtt: [ Bucket, Arn ]
+            - '*'
+        - arn:aws:s3:::${self:custom.regions.${opt:region}.replicationBucketName}*
+    - Effect: Allow
+      Action:
+        - es:ESHttpPost
+        - es:ESHttpGet
+      Resource:
+        - Fn::GetAtt: [ Domain, DomainArn ]
+        - Fn::Join:
+          - ''
+          - - Fn::GetAtt: [ Domain, DomainArn ]
+            - '/*'
+  environment:
+    BUCKET_NAME:
+      Ref: Bucket
+    DOMAIN_ENDPOINT:
+      Fn::GetAtt: [ Domain, DomainEndpoint ]
+
+plugins:
+  - serverless-pseudo-parameters
+
+functions:
+  listener:
+    handler: handler.listener
+    events:
+      - stream:
+          type: kinesis
+          arn: ${cf:cncb-event-stream-${opt:stage}.streamArn}
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
+  trigger:
+    handler: handler.trigger
+    events:
+      - sns:
+          arn: 
+            Ref: BucketTopic
+          topicName: ${self:service}-${opt:stage}-trigger
+  search:
+    handler: handler.search
+    events:
+      - http:
+          path: search
+          method: get
+          cors: true
+  replicator:
+    handler: replicator.trigger
+    events:
+      - sns:
+          arn: 
+            Ref: BucketTopic
+          topicName: ${self:service}-${opt:stage}-trigger
+    environment:
+      REPLICATION_BUCKET_NAME: ${self:custom.regions.${opt:region}.replicationBucketName}
+
+custom:
+  regions:
+    us-east-1:
+      replicationBucketName: cncb-round-robin-replication-${opt:stage}-bucket-WWWWWWWWWWWWW
+    us-west-2:
+      replicationBucketName: cncb-round-robin-replication-${opt:stage}-bucket-EEEEEEEEEEEEE
+
+resources:
+  Resources:
+    Bucket:
+      Type: AWS::S3::Bucket
+      DependsOn: [ BucketTopic, BucketTopicPolicy ]
+      Properties:
+        NotificationConfiguration:
+          TopicConfigurations:
+            - Event: s3:ObjectCreated:Put
+              Topic:
+                Ref: BucketTopic
+    BucketTopic: 
+      Type: AWS::SNS::Topic
+      Properties: 
+        TopicName: ${self:service}-${opt:stage}-trigger
+    BucketTopicPolicy: ${file(includes.yml):BucketTopicPolicy}
+
+    Domain:
+      Type: AWS::Elasticsearch::Domain
+      DependsOn: [ Bucket ]
+      Properties:
+        ElasticsearchVersion: 6.2
+        ElasticsearchClusterConfig: 
+          DedicatedMasterEnabled: false
+          InstanceCount: 1
+          ZoneAwarenessEnabled: false
+          InstanceType: t2.small.elasticsearch
+        EBSOptions: 
+          EBSEnabled: true
+          Iops: 0
+          VolumeSize: 10
+          VolumeType: gp2
+        SnapshotOptions: 
+          AutomatedSnapshotStartHour: 0
+        AccessPolicies: 
+          Statement: 
+            - Effect: Allow
+              Principal: 
+                AWS: '*'
+              Action: 'es:*'
+              Resource: 'arn:aws:es:${opt:region}:#{AWS::AccountId}:domain/cncb-bf-domain-*/*'
+        AdvancedOptions: 
+          rest.action.multi.allow_explicit_index: true
+
+  Outputs:
+    BucketName:
+      Value:
+        Ref: Bucket
+    BucketArn:
+      Value:
+        Fn::GetAtt: [ Bucket, Arn ]
+    TopicArn:
+      Value:
+        Ref: BucketTopic
+    DomainName:
+      Value:
+        Ref: Domain
+    DomainEndpoint:
+      Value:
+        Fn::GetAtt: [ Domain, DomainEndpoint ]
