@@ -1,0 +1,22 @@
+{
+  "name": "cncb-dynamodb-global-table",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "sls package -r us-east-1",
+    "dp:lcl:e": "sls deploy -v -r us-east-1",
+    "dp:lcl:w": "sls deploy -v -r us-west-2",
+    "rm:lcl:e": "sls remove -v -r us-east-1",
+    "rm:lcl:w": "sls remove -v -r us-west-2"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.218.1",
+    "serverless": "1.26.0",
+    "serverless-dynamodb-autoscaling-plugin": "^1.0.0",
+    "serverless-dynamodb-global-table-plugin": "^1.0.1"
+  },
+  "dependencies": {
+    "highland": "^2.11.1",
+    "uuid": "^3.1.0"
+  }
+}

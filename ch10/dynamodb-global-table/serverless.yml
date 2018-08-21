@@ -1,0 +1,79 @@
+service: cncb-dynamodb-global-table
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:PutItem
+        - dynamodb:GetItem
+      Resource:
+        Fn::GetAtt: [ Table, Arn ]
+    - Effect: Allow
+      Action:
+        - kinesis:PutRecord
+      Resource: ${cf:cncb-event-stream-${opt:stage}.streamArn}
+  environment:
+    SERVERLESS_PROJECT: ${self:service}
+    TABLE_NAME:
+      Ref: Table
+    STREAM_NAME: ${cf:cncb-event-stream-${opt:stage}.streamName}
+
+functions:
+  command:
+    handler: handler.command
+  trigger:
+    handler: handler.trigger
+    events:
+      - stream:
+          type: dynamodb
+          arn:
+            Fn::GetAtt: [ Table, StreamArn ]
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
+  listener:
+    handler: handler.listener
+    events:
+      - stream:
+          type: kinesis
+          arn: ${cf:cncb-event-stream-${opt:stage}.streamArn}
+          batchSize: 100
+          startingPosition: TRIM_HORIZON
+  query:
+    handler: handler.query
+
+plugins:
+  - serverless-dynamodb-autoscaling-plugin
+  - serverless-dynamodb-global-table-plugin
+
+custom:
+  autoscaling:
+    - table: Table
+      global: true
+      read:
+        minimum: 1
+        maximum: 5
+        usage: 0.6
+      write:
+        minimum: 1
+        maximum: 5
+        usage: 0.6
+
+resources:
+  Resources:
+    Table:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${opt:stage}-${self:service}-things
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
