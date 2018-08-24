@@ -1,0 +1,14 @@
+{
+  "name": "cncb-gcp",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "sls package -r us-east1 -s test",
+    "dp:lcl": "sls deploy -v --r us-east1",
+    "rm:lcl": "sls remove -r us-east1"
+  },
+  "devDependencies": {
+    "serverless": "^1.30.1",
+    "serverless-google-cloudfunctions": "^2.0.0"
+  }
+}
