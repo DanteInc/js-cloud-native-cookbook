@@ -2,7 +2,7 @@ service: cncb-replaying-events
 
 provider:
   name: aws
-  runtime: nodejs6.10
+  runtime: nodejs8.10
 
 functions:
   listener:
