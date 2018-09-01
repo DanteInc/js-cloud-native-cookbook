@@ -12,7 +12,7 @@ module.exports.listener = (event, context, cb) => {
     .toCallback(cb);
 };
 
-const recordToEvent = r => JSON.parse(new Buffer(r.kinesis.data, 'base64'));
+const recordToEvent = r => JSON.parse(Buffer.from(r.kinesis.data, 'base64'));
 
 const forThingCreated = e => e.type === 'thing-created';
 

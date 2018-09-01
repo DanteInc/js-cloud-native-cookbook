@@ -20,7 +20,7 @@ module.exports.listener = (event, context, cb) => {
 
 const recordToUow = r => ({
   record: r,
-  event: JSON.parse(new Buffer(r.kinesis.data, 'base64'))
+  event: JSON.parse(Buffer.from(r.kinesis.data, 'base64'))
 });
 
 // const print = v => console.log('%j', v);

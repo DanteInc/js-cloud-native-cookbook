@@ -80,7 +80,7 @@ const publish = event => {
   const params = {
     StreamName: process.env.STREAM_NAME,
     PartitionKey: event.partitionKey,
-    Data: new Buffer(JSON.stringify(event)),
+    Data: Buffer.from(JSON.stringify(event)),
   };
 
   console.log('params: %j', params);
@@ -106,7 +106,7 @@ module.exports.listener = (event, context, cb) => {
     .toCallback(cb);
 };
 
-const recordToEvent = r => JSON.parse(new Buffer(r.kinesis.data, 'base64'));
+const recordToEvent = r => JSON.parse(Buffer.from(r.kinesis.data, 'base64'));
 
 const forSourceNotSelf = e => e.tags.source != process.env.SERVERLESS_PROJECT;
 

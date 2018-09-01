@@ -94,7 +94,7 @@ const get = (s3, options, obj) => {
 
     return _(
         s3.getObject(params).promise()
-            .then(data => new Buffer(data.Body).toString())
+            .then(data => Buffer.from(data.Body).toString())
     )
         .split()
         // .tap(console.log)
@@ -112,7 +112,7 @@ const invoke = (lambda, options, event) => {
                 kinesis: {
                     partitionKey: event.kinesisRecordMetadata.partitionKey,
                     sequenceNumber: event.kinesisRecordMetadata.sequenceNumber,
-                    data: new Buffer(JSON.stringify(event.event)).toString('base64'),
+                    data: Buffer.from(JSON.stringify(event.event)).toString('base64'),
                     kinesisSchemaVersion: '1.0',
                 },
                 // invokeIdentityArn: identityarn,
@@ -128,7 +128,7 @@ const invoke = (lambda, options, event) => {
 
     print(payload);
 
-    payload = new Buffer(JSON.stringify(payload));
+    payload = Buffer.from(JSON.stringify(payload));
 
     const params = {
         FunctionName: options.function,

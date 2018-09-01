@@ -76,7 +76,7 @@ const publish = event => {
   const params = {
     StreamName: process.env.STREAM_NAME,
     PartitionKey: event.partitionKey,
-    Data: new Buffer(JSON.stringify(event)),
+    Data: Buffer.from(JSON.stringify(event)),
   };
 
   // print(params);

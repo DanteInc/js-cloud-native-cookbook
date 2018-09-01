@@ -19,7 +19,7 @@ module.exports.listener = (event, context, cb) => {
 
 const recordToUow = r => ({
   record: r,
-  event: JSON.parse(new Buffer(r.kinesis.data, 'base64'))
+  event: JSON.parse(Buffer.from(r.kinesis.data, 'base64'))
 });
 
 const forThingCreated = uow => uow.event.type === 'thing-created';
@@ -40,7 +40,7 @@ const randomError = () => {
 };
 
 const save = uow => {
-  const params = {
+  uow.params = {
     TableName: process.env.TABLE_NAME,
     Item: uow.event.thing,
   };
@@ -50,7 +50,7 @@ const save = uow => {
     logger: console,
   });
 
-  return _(db.put(params).promise()
+  return _(db.put(uow.params).promise()
     .catch(err => {
       err.uow = uow;
       throw err;

@@ -15,7 +15,7 @@ module.exports.trigger = (event, context, cb) => {
 };
 
 const recordToSync = r => {
-  const data = JSON.parse(new Buffer(r.kinesis.data, 'base64'));
+  const data = JSON.parse(Buffer.from(r.kinesis.data, 'base64'));
   return _(data.kinesisSyncRecords.map(sync => ({
     record: r,
     data: data,
@@ -47,7 +47,7 @@ const publish = event => {
   const params = {
     StreamName: process.env.STREAM_NAME,
     PartitionKey: event.partitionKey,
-    Data: new Buffer(JSON.stringify(event)),
+    Data: Buffer.from(JSON.stringify(event)),
   };
 
   console.log('params: %j', params);

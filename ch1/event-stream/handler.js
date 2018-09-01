@@ -23,7 +23,7 @@ module.exports.publish = (event, context, callback) => {
   const params = {
     StreamName: process.env.STREAM_NAME,
     PartitionKey: e.partitionKey,
-    Data: new Buffer(JSON.stringify(e)),
+    Data: Buffer.from(JSON.stringify(e)),
   };
 
   console.log('params: %j', params);

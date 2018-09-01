@@ -4,7 +4,7 @@ exports.transform = (event, context, callback) => {
   const output = event.records.map((record, i) => {
     // store all available data
     const uow = {
-      event: JSON.parse((new Buffer(record.data, 'base64')).toString('utf8')),
+      event: JSON.parse((Buffer.from(record.data, 'base64')).toString('utf8')),
       kinesisRecordMetadata: record.kinesisRecordMetadata,
       firehoseRecordMetadata: {
         deliveryStreamArn: event.deliveryStreamArn,
@@ -20,7 +20,7 @@ exports.transform = (event, context, callback) => {
     return {
       recordId: record.recordId,
       result: 'Ok',
-      data: new Buffer(JSON.stringify(uow), 'utf-8').toString('base64'),
+      data: Buffer.from(JSON.stringify(uow), 'utf-8').toString('base64'),
     };
   });
 
