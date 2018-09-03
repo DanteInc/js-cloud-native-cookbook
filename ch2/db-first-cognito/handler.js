@@ -34,12 +34,10 @@ const toEvent = uow => ({
     identityPoolId: uow.data.identityPoolId,
     datasetName: uow.data.datasetName
   },
-  thing: Object.assign(
-    {
-      identityId: uow.data.identityId
-    },
-    uow.thing
-  ),
+  thing: {
+    identityId: uow.data.identityId,
+    ...uow.thing,
+  },
   raw: uow.sync
 });
 

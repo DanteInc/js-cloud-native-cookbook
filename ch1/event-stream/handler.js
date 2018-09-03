@@ -4,19 +4,15 @@ const uuid = require('uuid');
 module.exports.publish = (event, context, callback) => {
   console.log('event: %j', event);
 
-  const e =
-    Object.assign(
-      {},
-      event,
-      {
-        id: uuid.v1(),
-        partitionKey: event.partitionKey || uuid.v4(),
-        timestamp: Date.now(),
-        tags: {
-          region: process.env.AWS_REGION,
-        }
-      }
-    );
+  const e = {
+    id: uuid.v1(),
+    partitionKey: event.partitionKey || uuid.v4(),
+    timestamp: Date.now(),
+    tags: {
+      region: process.env.AWS_REGION,
+    },
+    ...event,
+  }
 
   console.log('event: %j', e);
 

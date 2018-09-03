@@ -2,16 +2,14 @@ const aws = require('aws-sdk');
 const _ = require('highland');
 const uuid = require('uuid');
 
-module.exports.command = (event, context, callback) => {
-  console.log('event: %j', event);
+module.exports.command = (request, context, callback) => {
+  console.log('request: %j', request);
 
-  const thing = Object.assign(
-    {
+    const thing = {
       id: uuid.v4(),
       latch: 'open',
-    },
-    event
-  );
+      ...request
+    };
 
   const params = {
     TableName: process.env.TABLE_NAME,

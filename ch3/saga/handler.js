@@ -5,13 +5,11 @@ const uuid = require('uuid');
 module.exports.submit = (request, context, callback) => {
   console.log('request: %j', request);
 
-  const order = Object.assign(
-    {
-      id: uuid.v4(),
-      status: 'submitted',
-    },
-    request
-  );
+  const order = {
+    id: uuid.v4(),
+    status: 'submitted',
+    ...request,
+  };
 
   const params = {
     TableName: process.env.TABLE_NAME,
