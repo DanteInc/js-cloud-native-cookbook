@@ -18,8 +18,8 @@
     "react-helmet": "^5.0.0",
     "react-router": "^3.2.0",
     "serverless": "1.26.0",
-    "serverless-spa-config": "^1.0.0",
-    "serverless-spa-deploy": "^1.0.0"
+    "serverless-spa-config": "1.0.2",
+    "serverless-spa-deploy": "1.0.0"
   },
   "phenomic": {
     "presets": [
