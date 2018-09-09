@@ -1,4 +1,4 @@
-service: cncb-fault-monitor
+service: cncb-resubmitting-faults-monitor
 
 provider:
   name: aws

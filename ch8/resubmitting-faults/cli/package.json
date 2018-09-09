@@ -1,5 +1,5 @@
 {
-  "name": "cncb-resubmitting-faults",
+  "name": "cncb-resubmitting-faults-cli",
   "version": "1.0.0",
   "private": true,
   "scripts": {
