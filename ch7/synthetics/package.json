@@ -10,13 +10,13 @@
     "rm:lcl": "sls remove -r us-east-1"
   },
   "dependencies": {
-    "aws-amplify": "^0.4.1",
-    "aws-amplify-react": "^0.1.47",
-    "react": "16.2.0",
-    "react-dom": "16.2.0"
+    "amazon-cognito-auth-js": "1.2.4",
+    "react": "16.3.2",
+    "react-dom": "16.3.2"
   },
   "devDependencies": {
-    "react-scripts": "1.1.1",
+    "react-scripts": "1.1.5",
+    "react-router-dom": "4.3.1",
     "serverless": "1.26.0",
     "serverless-spa-deploy": "^1.0.0"
   }

@@ -1,30 +1,30 @@
 import React, { Component } from 'react';
 
-import Amplify from 'aws-amplify';
-import { withAuthenticator } from 'aws-amplify-react';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { CognitoSecurity, ImplicitCallback, SecureRoute } from './authenticate';
 
-import logo from './logo.svg';
-import './App.css';
-
-import configuration from './configuration';
-Amplify.configure(configuration);
+import Home from './Home';
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-
-        <pre style={{'text-align':'justify'}}>{JSON.stringify(this.props.authData.signInUserSession, null, 2)}</pre>
-      </div>
+      <Router>
+        <CognitoSecurity
+          // UPDATE ME
+          domain='cncb-<stage>.auth.us-east-1.amazoncognito.com'
+          clientId='a1b2c3d4e5f6g7h8i9j0k1l2m3'
+      
+          scope={['phone', 'email', 'profile', 'openid', 'aws.cognito.signin.user.admin']}
+          
+          redirectSignIn={`${window.location.origin}/implicit/callback`}
+          redirectSignOut={window.location.origin}
+        >
+          <SecureRoute path='/' exact component={Home} />
+          <Route path='/implicit/callback' component={ImplicitCallback} />
+        </CognitoSecurity>
+      </Router>
     );
   }
 }
 
-export default withAuthenticator(App, { includeGreetings: true });
+export default App;
