@@ -6,6 +6,7 @@ provider:
 
 plugins:
   - serverless-spa-deploy
+  - serverless-spa-config
 
 custom:
   spa:
@@ -13,22 +14,8 @@ custom:
       - source: ./build
         globs: '**/*'
         headers:
-          CacheControl: max-age=300
-
-resources:
-  Resources:
-    WebsiteBucket:
-      Type: AWS::S3::Bucket
-      Properties:
-        AccessControl: PublicRead
-        WebsiteConfiguration:
-          IndexDocument: index.html
-          ErrorDocument: index.html
-
-  Outputs:
-    WebsiteBucketName:
-      Value:
-        Ref: WebsiteBucket
-    WebsiteURL:
-      Value:
-        Fn::GetAtt: [ WebsiteBucket, WebsiteURL ]
+          CacheControl: max-age=31536000 # 1 year
+      - source: ./build
+        globs: 'index.html'
+        headers:
+          CacheControl: max-age=300 # 5 minutes
