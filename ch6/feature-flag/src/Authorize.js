@@ -1,7 +1,9 @@
 import intersection from 'lodash/intersection';
 import get from 'lodash/get';
 
-const getGroups = props => get(props, 'authData.signInUserSession.idToken.payload.cognito:groups', '');
+import { withAuth } from './authenticate';
+
+const getGroups = props => get(props, 'auth._cognitoAuth.signInUserSession.idToken.payload.cognito:groups', '');
 
 export const check = (allowedRoles, props) => {
   // console.log('props: ', props);
@@ -16,5 +18,5 @@ export const HasRole = allowedRoles =>
     props.children :
     null;
 
-export const HasAuthorRole = HasRole(['Author']);
-export const HasBetaUserRole = HasRole(['BetaUser']);
+export const HasAuthorRole = withAuth(HasRole(['Author']));
+export const HasBetaUserRole = withAuth(HasRole(['BetaUser']));
