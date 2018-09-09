@@ -19,7 +19,7 @@ const Home = ({ auth }) => (
     <button onClick={auth.logout}>Logout</button>
 
     <HasAuthorRole><p>This is the Author Feature!</p></HasAuthorRole>
-    <HasBetaUserRole auth={auth}><p>This is a New Beta Feature...</p></HasBetaUserRole>
+    <HasBetaUserRole><p>This is a New Beta Feature...</p></HasBetaUserRole>
 
     <pre style={{ 'textAlign': 'justify' }}>{JSON.stringify(auth.getSession(), null, 2)}</pre>
 

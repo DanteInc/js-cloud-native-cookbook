@@ -8,7 +8,7 @@ export const REFERRER_KEY = 'secureRouterReferrerPath';
 
 class Auth {
   constructor(config) {
-    this._cognitoAuth = new CognitoAuth({
+    this.cognito = new CognitoAuth({
       ClientId: config.clientId,
       AppWebDomain: config.domain,
       TokenScopesArray: config.scope,
@@ -16,7 +16,7 @@ class Auth {
       RedirectUriSignOut: config.redirectSignOut,
     });
 
-    this._cognitoAuth.useImplicitFlow();
+    this.cognito.useImplicitFlow();
 
     this.location = config.location;
   }
@@ -29,11 +29,11 @@ class Auth {
     const curUrl = this._getWindowHref();
     
     return new Promise((resolve, reject) => {
-      this._cognitoAuth.userhandler = {
+      this.cognito.userhandler = {
         onSuccess: this._onAuthenticationSuccess(resolve),
         onFailure: this._onAuthenticationFailure(reject),
       };
-      this._cognitoAuth.parseCognitoWebResponse(curUrl);
+      this.cognito.parseCognitoWebResponse(curUrl);
     });
   };
 
@@ -47,15 +47,15 @@ class Auth {
   };
 
   isAuthenticated = () => (
-    this._cognitoAuth.isUserSignedIn()
+    this.cognito.isUserSignedIn()
   );
 
   getSession = () => (
-    this._cognitoAuth.getCachedSession()
+    this.cognito.getCachedSession()
   );
  
   getIdToken = () => (
-    this._cognitoAuth.getCachedSession().getIdToken()
+    this.cognito.getCachedSession().getIdToken()
   );
 
   getJwtToken = () => {
@@ -65,11 +65,11 @@ class Auth {
 
   login = (fromUri) => {
     localStorage.setItem(REFERRER_KEY, JSON.stringify(fromUri ? { pathname: fromUri } : this.location));
-    this._cognitoAuth.getSession();
+    this.cognito.getSession();
   };
 
   logout = () => {
-    this._cognitoAuth.signOut();
+    this.cognito.signOut();
   };
 }
 

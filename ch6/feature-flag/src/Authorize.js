@@ -3,7 +3,7 @@ import get from 'lodash/get';
 
 import { withAuth } from './authenticate';
 
-const getGroups = props => get(props, 'auth._cognitoAuth.signInUserSession.idToken.payload.cognito:groups', '');
+const getGroups = props => get(props, 'auth.cognito.signInUserSession.idToken.payload.cognito:groups', '');
 
 export const check = (allowedRoles, props) => {
   // console.log('props: ', props);
