@@ -6,7 +6,7 @@ import { Handler } from '../../../src/listener';
 
 require('baton-vcr-replay-for-aws-sdk');
 
-describe('listener/index.js', () => {
+describe.only('listener/index.js', () => {
   before(() => {
     process.env.TABLE_NAME = 'stg-cncb-contract-testing-async-downstream-things';
     aws.config.update({ region: 'us-east-1' });

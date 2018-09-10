@@ -22,7 +22,7 @@ describe('trigger/index.js', () => {
     new Handler(STREAM_NAME).handle(TRIGGER)
       .collect()
       .tap((data) => {
-        expect(stub.calledWith(EVENT)).to.equal(true);
+        expect(stub).to.have.been.calledWith(EVENT);
         expect(data).to.deep.equal([{
           response: {},
           event: EVENT,
@@ -36,7 +36,7 @@ describe('trigger/index.js', () => {
       .returns(_([{}]));
 
     handle({}, {}, (err, result) => {
-      expect(stub.calledWith({})).to.equal(true);
+      expect(stub).to.have.been.calledWith({});
       expect(err).to.equal(null);
       expect(result).to.deep.equal([{}]);
       done();
@@ -49,7 +49,7 @@ describe('trigger/index.js', () => {
         .map(() => { throw new Error(); }));
 
     handle({}, {}, (err, result) => {
-      expect(stub.calledOnce).to.equal(true);
+      expect(stub).to.have.been.calledOnce;
       expect(err).to.not.equal(null);
       expect(result).to.equal(undefined);
       done();

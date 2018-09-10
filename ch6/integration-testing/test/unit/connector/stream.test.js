@@ -24,12 +24,12 @@ describe('connector/stream/index.js', () => {
 
     const data = await new Connector('s1').publish(EVENT);
 
-    expect(spy.calledOnce).to.equal(true);
-    expect(spy.calledWith({
+    expect(spy).to.have.been.calledOnce;
+    expect(spy).to.have.been.calledWith({
       StreamName: 's1',
       PartitionKey: EVENT.partitionKey,
       Data: Buffer.from(JSON.stringify(EVENT)),
-    })).to.equal(true);
+    });
     expect(data).to.deep.equal({});
   });
 });

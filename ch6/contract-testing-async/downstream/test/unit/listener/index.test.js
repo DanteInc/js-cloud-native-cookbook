@@ -21,7 +21,7 @@ describe('listener/index.js', () => {
     new Handler(TABLE_NAME).handle(EVENTS)
       .collect()
       .tap((data) => {
-        expect(stub.calledWith(THING)).to.equal(true);
+        expect(stub).to.have.been.calledWith(THING);
         expect(data).to.deep.equal([THING]);
       })
       .done(done);
@@ -32,7 +32,7 @@ describe('listener/index.js', () => {
       .returns(_([{}]));
 
     handle({}, {}, (err, result) => {
-      expect(stub.calledWith({})).to.equal(true);
+      expect(stub).to.have.been.calledWith({});
       expect(err).to.equal(null);
       expect(result).to.deep.equal([{}]);
       done();
@@ -45,7 +45,7 @@ describe('listener/index.js', () => {
         .map(() => { throw new Error(); }));
 
     handle({}, {}, (err, result) => {
-      expect(stub.calledOnce).to.equal(true);
+      expect(stub).to.have.been.calledOnce;
       expect(err).to.not.equal(null);
       expect(result).to.equal(undefined);
       done();

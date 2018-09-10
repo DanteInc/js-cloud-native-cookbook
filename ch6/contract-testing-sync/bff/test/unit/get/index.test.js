@@ -25,7 +25,7 @@ describe('get/index.js', () => {
 
     const data = await new Handler(TABLE_NAME).handle(REQUEST);
 
-    expect(stub.calledWith(ID)).to.equal(true);
+    expect(stub).to.have.been.calledWith(ID);
     expect(data).to.deep.equal(THING);
   });
 
@@ -34,7 +34,7 @@ describe('get/index.js', () => {
       .returns(Promise.resolve({}));
 
     handle({}, {}, (err, result) => {
-      expect(stub.calledWith({})).to.equal(true);
+      expect(stub).to.have.been.calledWith({});
       expect(err).to.equal(null);
       expect(result).to.deep.equal({
         statusCode: 200,
@@ -53,7 +53,7 @@ describe('get/index.js', () => {
       .returns(Promise.resolve());
 
     handle({}, {}, (err, result) => {
-      expect(stub.calledWith({})).to.equal(true);
+      expect(stub).to.have.been.calledWith({});
       expect(err).to.equal(null);
       expect(result).to.deep.equal({
         statusCode: 404,
@@ -71,7 +71,7 @@ describe('get/index.js', () => {
       .returns(Promise.reject(new Error('test error')));
 
     handle({}, {}, (err, result) => {
-      expect(stub.calledOnce).to.equal(true);
+      expect(stub).to.have.been.calledOnce;
       expect(err).to.equal(null);
       expect(result).to.deep.equal({
         statusCode: 500,

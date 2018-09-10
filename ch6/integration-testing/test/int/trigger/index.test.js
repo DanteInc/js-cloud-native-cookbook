@@ -68,8 +68,3 @@ const EVENT = {
     old: {},
   },
 };
-
-const RESPONSE = {
-  SequenceNumber: '49585487978807765990957385984928997062236759908188946434',
-  ShardId: 'shardId-000000000000',
-};

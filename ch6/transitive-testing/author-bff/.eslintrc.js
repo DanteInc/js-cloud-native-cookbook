@@ -33,7 +33,8 @@ module.exports = {
       "no-underscore-dangle": 0,
       "new-cap": 0,
       "no-use-before-define": 0,
-      "no-useless-escape": 0
+      "no-useless-escape": 0,
+      "no-unused-expressions": 0
     },
     "globals": {}
   };

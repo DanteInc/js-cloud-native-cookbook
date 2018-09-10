@@ -11,7 +11,7 @@ describe('contract/frontend', () => {
   it('should relay the frontend get request', () => run('./fixtures/frontend/get'));
 });
 
-const run = fixture => {
+const run = (fixture) => {
   const rec = relay(fixture);
 
   return client[rec.request.method](rec.request.path)

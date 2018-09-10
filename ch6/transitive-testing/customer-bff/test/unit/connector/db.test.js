@@ -20,14 +20,14 @@ describe('connector/db/index.js', () => {
     const data = await new Connector('t1')
       .save({ id: '00000000-0000-0000-0000-000000000000', name: 'thing0' });
 
-    expect(spy.calledOnce).to.equal(true);
-    expect(spy.calledWith({
+    expect(spy).to.have.been.calledOnce;
+    expect(spy).to.have.been.calledWith({
       TableName: 't1',
       Item: {
         id: '00000000-0000-0000-0000-000000000000',
         name: 'thing0',
       },
-    })).to.equal(true);
+    });
     expect(data).to.deep.equal({});
   });
 
@@ -44,13 +44,13 @@ describe('connector/db/index.js', () => {
     const data = await new Connector('t1')
       .getById('00000000-0000-0000-0000-000000000000');
 
-    expect(spy.calledOnce).to.equal(true);
-    expect(spy.calledWith({
+    expect(spy).to.have.been.calledOnce;
+    expect(spy).to.have.been.calledWith({
       TableName: 't1',
       Key: {
         id: '00000000-0000-0000-0000-000000000000',
       },
-    })).to.equal(true);
+    });
     expect(data).to.deep.equal({
       id: '00000000-0000-0000-0000-000000000000',
       name: 'thing0',
