@@ -97,12 +97,14 @@ const get = (s3, options, obj) => {
 const invoke = (lambda, options, event) => {
     print(event);
 
+    const Payload = JSON.stringify({
+        Records: [event.uow.record],
+    });
+
     const params = {
         FunctionName: event.tags.functionName,
-        InvocationType: options.dry ? 'DryRun' : payload.length <= 100000 ? 'Event' : 'RequestResponse',
-        Payload: Buffer.from(JSON.stringify({
-            Records: [event.uow.record],
-        })),
+        InvocationType: options.dry ? 'DryRun' : Payload.length <= 100000 ? 'Event' : 'RequestResponse',
+        Payload: Buffer.from(Payload),
     };
 
     return _(
