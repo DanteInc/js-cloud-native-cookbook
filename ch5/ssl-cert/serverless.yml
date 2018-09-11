@@ -14,12 +14,11 @@ custom:
       - source: ./build
         globs: '**/*'
   dns:
-    hostedZoneId:
-      Ref: HostedZone
+    hostedZoneId: ZXXXXXXXXXXXXX
     validationDomain: example.com
-    domainName: cncb-${opt:stage}.${self:custom.dns.validationDomain}
+    domainName: ${self:custom.dns.validationDomain}
     wildcard: '*.${self:custom.dns.domainName}'
-    endpoint: site.${self:custom.dns.domainName}
+    endpoint: ${opt:stage}-${self:service}.${self:custom.dns.domainName}
   cdn:
     acmCertificateArn: 
       Ref: WildcardCertificate
@@ -28,11 +27,6 @@ custom:
 
 resources:
   Resources:
-    HostedZone: 
-      Type: AWS::Route53::HostedZone
-      Properties: 
-        Name: ${self:custom.dns.domainName}
-
     WildcardCertificate:
       Type: AWS::CertificateManager::Certificate
       Properties:
@@ -44,9 +38,6 @@ resources:
           - ${self:custom.dns.domainName}
 
   Outputs:
-    HostedZone:
-      Value:
-        Ref: HostedZone
     WildcardCertificateArn:
       Value:
         Ref: WildcardCertificate
