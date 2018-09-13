@@ -8,6 +8,7 @@ provider:
   # cfnRole: arn:aws:iam::${self:custom.accounts.${opt:acct}.accountNumber}:role/${opt:stage}-cfnRole
   runtime: nodejs8.10
   endpointType: REGIONAL
+  memorySize: 1024
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -29,6 +30,7 @@ package:
 functions:
   save:
     handler: src/save/index.handle
+    memorySize: 512
     events:
       - http:
           path: things

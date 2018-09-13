@@ -56,9 +56,12 @@ const batchWrite = batchUow => {
 
   return _(db.batchWrite(batchUow.params).promise()
     .tap(print)
-    .then(() => batchUow)
+    .then(data => (
+      Object.keys(data.UnprocessedItems).length > 0 ?
+        Promise.reject(data) :
+        batchUow
+    ))    
     .catch(err => {
-      // individual retry ???
       err.uow = batchUow;
       throw err;
     })
