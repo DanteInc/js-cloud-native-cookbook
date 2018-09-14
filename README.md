@@ -3,17 +3,17 @@
 Continuously deliver serverless cloud-native solutions on AWS, Azure and GCP
 
 ## Chapters
-1. [Getting Started with Cloud-Native](./ch1/README.md)
-2. [Applying the Event-Sourcing and CQRS Patterns](./ch2/README.md)
-3. [Implementing Autonomous Services](./ch3/README.md)
-4. [Leveraging the Edge of the Cloud](./ch4/README.md)
-5. [Securing Cloud-Native Systems](./ch5/README.md)
-6. [Building a Continuous Deployment Pipeline](./ch6/README.md)
-7. [Optimizing Observability](./ch7/README.md)
-8. [Designing for Failure](./ch8/README.md)
-9. [Optimizing Performance](./ch9/README.md)
-10. [Deploying to Multiple Regions](./ch10/README.md)
-11. [Welcoming Polycloud](./ch11/README.md)
+1. [Getting Started with Cloud-Native](./ch1)
+2. [Applying the Event-Sourcing and CQRS Patterns](./ch2)
+3. [Implementing Autonomous Services](./ch3)
+4. [Leveraging the Edge of the Cloud](./ch4)
+5. [Securing Cloud-Native Systems](./ch5)
+6. [Building a Continuous Deployment Pipeline](./ch6)
+7. [Optimizing Observability](./ch7)
+8. [Designing for Failure](./ch8)
+9. [Optimizing Performance](./ch9)
+10. [Deploying to Multiple Regions](./ch10)
+11. [Welcoming Polycloud](./ch11)
 
 ## Setup Development Environment:
 
