@@ -4,8 +4,8 @@
 1. sls create --template-url https://github.com/danteinc/js-cloud-native-cookbook/tree/master/ch3/bff-graphql-crud --path cncb-bff-graphql-crud
 2. cd cncb-bff-graphql-crud
 3. npm install
-4. npm test -- -s your-name
-5. npm run dp:lcl -- -s your-name
+4. npm test -- -s $MY_STAGE
+5. npm run dp:lcl -- -s $MY_STAGE
 6. curl commands
 ```
 curl -v -X POST -H 'Content-Type: application/json' -d '{"query":"mutation { saveThing(input: { id: \"33333333-1111-1111-1111-000000000000\", name: \"thing1\", description: \"This is thing one of two.\" }) { id } }"}' https://XYZ.execute-api.us-east-1.amazonaws.com/john/graphql | json_pp
@@ -106,5 +106,5 @@ mutation {
 }
 ```
 
-8. sls logs -f trigger -r us-east-1 -s your-name
-9. npm run rm:lcl -- -s your-name
+8. sls logs -f trigger -r us-east-1 -s $MY_STAGE
+9. npm run rm:lcl -- -s $MY_STAGE

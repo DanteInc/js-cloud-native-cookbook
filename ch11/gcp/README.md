@@ -5,7 +5,7 @@
 2. cd cncb-gcp
 3. npm install
 4. npm test
-5. npm run dp:lcl -- -s your-name
+5. npm run dp:lcl -- -s $MY_STAGE
 6. curl -v https://us-east1-cncb-project.cloudfunctions.net/hello
-7. sls logs -f hello -r us-east1 -s your-name
-8. npm run rm:lcl -- -s your-name
+7. sls logs -f hello -r us-east1 -s $MY_STAGE
+8. npm run rm:lcl -- -s $MY_STAGE

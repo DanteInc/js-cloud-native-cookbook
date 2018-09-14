@@ -5,7 +5,7 @@
 2. cd cncb-replaying-events
 3. npm install
 4. npm test
-5. npm run dp:lcl -- -s your-name
+5. npm run dp:lcl -- -s $MY_STAGE
 6. node index.js replay --bucket <your-data-lake> --prefix <your-stream-name> --function <your-function-name> --dry false
-7. sls logs -f listener -r us-east-1 -s your-name
-8. npm run rm:lcl -- -s your-name
+7. sls logs -f listener -r us-east-1 -s $MY_STAGE
+8. npm run rm:lcl -- -s $MY_STAGE

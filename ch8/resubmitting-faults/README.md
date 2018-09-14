@@ -13,14 +13,14 @@ $ sls create --template-url https://github.com/danteinc/js-cloud-native-cookbook
 ```
 $ cd ./monitor
 $ npm install
-$ npm run dp:lcl -- -s your-name
+$ npm run dp:lcl -- -s $MY_STAGE
 
 $ cd ../simulator
 $ npm install
-$ npm run dp:lcl -- -s your-name
+$ npm run dp:lcl -- -s $MY_STAGE
 
-$ sls invoke -f simulate -r us-east-1 -s your-name
+$ sls invoke -f simulate -r us-east-1 -s $MY_STAGE
 ```
 3. npm install
 4. node index.js replay --bucket <your-data-lake> --prefix <your-stream-name> --function <your-function-name> --dry false
-5. npm run rm:lcl -- -s your-name
+5. npm run rm:lcl -- -s $MY_STAGE

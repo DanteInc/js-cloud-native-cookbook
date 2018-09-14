@@ -11,7 +11,7 @@ $ sls create --template-url https://github.com/danteinc/js-cloud-native-cookbook
 ```
 $ cd ./cncb-session-consistency-service
 $ npm install
-$ npm run dp:lcl -- -s your-name
+$ npm run dp:lcl -- -s $MY_STAGE
 ```
 3. cd ../cncb-session-consistency-spa
 4. npm install
@@ -21,5 +21,5 @@ $ npm run dp:lcl -- -s your-name
 8. Remove service:
 ```
 $ cd ../cncb-session-consistency-service
-$ npm run rm:lcl -- -s your-name
+$ npm run rm:lcl -- -s $MY_STAGE
 ```

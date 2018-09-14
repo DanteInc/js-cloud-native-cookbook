@@ -6,6 +6,6 @@
 3. npm install
 4. update serverless.yml with hosted zone id and domain name
 5. npm test
-7. npm run dp:lcl -- -s your-name
+7. npm run dp:lcl -- -s $MY_STAGE
 8. browse <WebsiteURL> see stack output
-9. npm run rm:lcl -- -s your-name
+9. npm run rm:lcl -- -s $MY_STAGE

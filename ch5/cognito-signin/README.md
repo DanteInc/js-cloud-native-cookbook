@@ -8,9 +8,9 @@
 4. npm start
 5. npm test
 6. npm run build
-7. npm run dp:lcl -- -s your-name
-8. browse http://cncb-cognito-signin-your-name-websitebucket-xxxx.s3-website-us-east-1.amazonaws.com
+7. npm run dp:lcl -- -s $MY_STAGE
+8. browse http://cncb-cognito-signin-$MY_STAGE-websitebucket-xxxx.s3-website-us-east-1.amazonaws.com
 9. Click Sign Up and complete form
 10. Click Sign Out
 11. Click Sign In and complete form
-12. npm run rm:lcl -- -s your-name
+12. npm run rm:lcl -- -s $MY_STAGE

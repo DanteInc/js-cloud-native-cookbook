@@ -6,6 +6,6 @@
 3. npm install
 4. npm test
 5. npm run build
-6. npm run dp:lcl -- -s your-name
+6. npm run dp:lcl -- -s $MY_STAGE
 7. browse https://<see WebsiteDistributionURL output>.cloudfront.net
-8. npm run rm:lcl -- -s your-name
+8. npm run rm:lcl -- -s $MY_STAGE
