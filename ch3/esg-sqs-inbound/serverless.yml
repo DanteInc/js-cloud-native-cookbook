@@ -1,0 +1,46 @@
+service: cncb-esg-sqs-inbound
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - sqs:SendMessage
+      Resource:
+        Fn::GetAtt: [ Queue, Arn ]
+    - Effect: Allow
+      Action:
+        - kinesis:PutRecord
+      Resource: ${cf:cncb-event-stream-${opt:stage}.streamArn}
+
+functions:
+  submit:
+    handler: handler.submit
+    environment:
+      QUEUE_URL:
+        Ref: Queue
+  trigger:
+    handler: handler.trigger
+    events:
+      - sqs:
+          batchSize: 10
+          arn:
+            Fn::GetAtt: [ Queue, Arn ]
+    environment:
+      STREAM_NAME: ${cf:cncb-event-stream-${opt:stage}.streamName}
+
+resources:
+  Resources:
+    Queue:
+      Type: AWS::SQS::Queue
+      Properties:
+        QueueName: ${self:service}-${opt:stage}-submit
+
+  Outputs:
+    QueueArn:
+      Value:
+        Fn::GetAtt: [ Queue, Arn ]
+    QueueURL:
+      Value:
+        Ref: Queue

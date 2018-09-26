@@ -1,0 +1,16 @@
+{
+  "name": "cncb-esg-sqs-inbound",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "test": "sls package -r us-east-1",
+    "dp:lcl": "sls deploy -v -r us-east-1",
+    "rm:lcl": "sls remove -r us-east-1"
+  },
+  "devDependencies": {
+    "serverless": "1.32.0"
+  },
+  "dependencies": {
+    "highland": "^2.13.0"
+  }
+}
