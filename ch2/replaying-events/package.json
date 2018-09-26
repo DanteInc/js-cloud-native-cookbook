@@ -5,7 +5,7 @@
   "scripts": {
     "replay": "node index.js",
     "test": "sls package -r us-east-1",
-    "dp:lcl": "sls deploy -r us-east-1",
+    "dp:lcl": "sls deploy -v -r us-east-1",
     "rm:lcl": "sls remove -r us-east-1"
   },
   "devDependencies": {
