@@ -1,4 +1,4 @@
-# Creating a materialized view in DynamoDB
+# Creating a materialized view in Elasticsearch
 
 ## How to do it...
 1. sls create --template-url https://github.com/danteinc/js-cloud-native-cookbook/tree/master/ch2/materialized-view-es --path cncb-materialized-view-es
