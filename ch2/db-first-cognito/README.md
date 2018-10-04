@@ -1,7 +1,7 @@
 # Applying the database-first variant of the event sourcing pattern with Cognito Datasets
 
 ## How to do it...
-1. sls create --template-url https://github.com/danteinc/js-cloud-native-cookbook/tree/master/ch2/db-first-dynamodb --path cncb-db-first-dynamodb
+1. sls create --template-url https://github.com/danteinc/js-cloud-native-cookbook/tree/master/ch2/db-first-cognito --path cncb-db-first-cognito
 2. cd cncb-db-first-dynamodb
 3. npm install
 4. npm test -- -s $MY_STAGE
